@@ -9,43 +9,15 @@ Lexer::Lexer(std::string src) : source(std::move(src)), position(0), line(1), co
 const static std::unordered_map<std::string, TokenType> keywords = {
     {"fn", TokenType::FUNCTION},
     {"return", TokenType::RETURN},
-    {"let", TokenType::LET},
-    {"if", TokenType::IF},
-    {"else", TokenType::ELSE},
-    {"module", TokenType::MODULE},
-    {"use", TokenType::USE},
-    {"antidisasm", TokenType::ANTI_DISASSEMBLE},
-    {"int", TokenType::INT},
-    {"entry", TokenType::ENTRY},
-    {"asm", TokenType::ASM},
+    {"int",TokenType::INT},
+    {"char",TokenType::CHAR},
+    {"module",TokenType::MODULE},
+    {"use",TokenType::USE},
 };
-
 
 void Lexer::SkipWhitespace() {
     while (!IsAtEnd() && isspace(Peek())) {
         Advance();
-    }
-}
-
-void Lexer::SkipComment() {
-    // 处理单行注释 //
-    if (Peek() == '/' && PeekNext() == '/') {
-        Advance(); Advance();  // 跳过//
-        while (Peek() != '\n' && !IsAtEnd()) Advance();
-        return;
-    }
-
-    // 处理多行注释 /* */
-    if (Peek() == '/' && PeekNext() == '*') {
-        Advance(); Advance();  // 跳过/*
-        while (!IsAtEnd()) {
-            if (Peek() == '*' && PeekNext() == '/') {
-                Advance(); Advance();  // 跳过*/
-                return;
-            }
-            Advance();
-        }
-        printf("未终止的多行注释"); // 友好报错
     }
 }
 
@@ -62,10 +34,6 @@ char Lexer::Advance() {
 
 char Lexer::Peek() const {
     return source[position];
-}
-
-char Lexer::PeekNext() const {
-    return source[position + 1];
 }
 
 bool Lexer::IsAtEnd() const {
@@ -145,7 +113,12 @@ Token Lexer::NextToken() {
         case ')': return {TokenType::RIGHT_PAREN, ")", line, column};
         case ',': return {TokenType::COMMA, ",", line, column};
         case ';': return {TokenType::SEMICOLON, ";", line, column};
-        case ':': return {TokenType::COLON, ":", line, column};
+        case ':': {
+            if (Peek() == ':') {
+                Advance(); return {TokenType::COLON_COLON, "::", line, column};
+            }
+            return {TokenType::COLON, ":", line, column};
+        }
         case '.': return {TokenType::DOT, ".", line, column};
         case '[': return {TokenType::LBRACKET, "[", line, column};
         case ']': return {TokenType::RBRACKET, "]", line, column};
@@ -160,7 +133,6 @@ Token Lexer::NextToken() {
         case '?': return {TokenType::QUESTION, "?", line, column};
         case '|': return {TokenType::PIPE, "|", line, column};
         case '&': return {TokenType::AND, "&", line, column};
-        case '#': return {TokenType::HASH, "#", line, column};
         case '=': return {TokenType::EQUAL, "=", line, column};
         default: printf("[line %d, column %d]\033[31m error:\033[0m Unknown token: %c\n", line, column, c);
             return {TokenType::UNKNOWN, "", line, column};
@@ -172,15 +144,12 @@ std::string token_type_to_string(const TokenType type) {
     switch (type) {
         case TokenType::FUNCTION: return "FN";
         case TokenType::RETURN: return "RETURN";
-        case TokenType::LET: return "LET";
-        case TokenType::IF: return "IF";
-        case TokenType::ELSE: return "ELSE";
+        case TokenType::INT: return "INT";
+        case TokenType::CHAR: return "CHAR";
         case TokenType::MODULE: return "MODULE";
         case TokenType::USE: return "USE";
-        case TokenType::ANTI_DISASSEMBLE: return "ANTI_DISASSEMBLE";
-        case TokenType::ASM: return "ASM";
-        case TokenType::INT: return "INT";
-        case TokenType::ENTRY: return "ENTRY";
+        case TokenType::COLON: return "COLON";
+        case TokenType::COLON_COLON: return "COLON_COLON";
         case TokenType::IDENTIFIER: return "IDENTIFIER";
         case TokenType::NUMBER: return "NUMBER";
         case TokenType::PLUS: return "PLUS";
