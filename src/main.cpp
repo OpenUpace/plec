@@ -27,6 +27,7 @@ int main(int argc, char* argv[]) {
 
     do {
         token = lexer.NextToken();
+        std::cout << token_type_to_string(token.type) << std::endl;
     } while (token.type != TokenType::EOF_TOKEN);
 
     return 0;
