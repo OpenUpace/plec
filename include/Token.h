@@ -6,19 +6,12 @@
 // 定义 Token 类型
 enum class TokenType {
     // keywords
+    INT,
+    CHAR,
     FUNCTION,
     RETURN,
-    HANZI,
-    UNICODE_CHAR,
-    LET,
-    INT,
-    IF,
-    ELSE,
     MODULE,
     USE,
-    ANTI_DISASSEMBLE,
-    ENTRY,
-    ASM,
     PLUS,
     MINUS,
     MULTIPLICATION,
@@ -36,9 +29,9 @@ enum class TokenType {
     SEMICOLON,
     DOUBLE_QUOTE,
     COLON,
+    COLON_COLON,
     QUESTION,
     AND,
-    HASH,
     AT,
     LESS, // <
     GREATER, // >
