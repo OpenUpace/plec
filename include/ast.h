@@ -1,9 +1,9 @@
 #ifndef AST_H_
 #define AST_H_
 
-#include <Lexer.h>
+#include <lexer.h>
 
-typedef enum { AST_NUMBER, AST_BINARY_OP } NodeType ;
+typedef enum { NUMBER, BINARY_OP } NodeType ;
 
 typedef struct ASTNode {
     NodeType type;
@@ -15,6 +15,6 @@ typedef struct ASTNode {
             TokenType op;
         } binary_op;
     } data;
-} ASTNode ;
+} ASTNode;
 
 #endif
