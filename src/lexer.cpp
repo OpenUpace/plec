@@ -22,7 +22,7 @@ void Lexer::SkipWhitespace() {
 }
 
 char Lexer::Advance() {
-    const char current = source[position++];
+    const char32_t current = source[position++];
     if (current == '\n') {  // 换行符
         line++;
         column = 1;
@@ -32,7 +32,7 @@ char Lexer::Advance() {
     return current;
 }
 
-char Lexer::Peek() const {
+char32_t Lexer::Peek() const {
     return source[position];
 }
 
@@ -56,6 +56,40 @@ std::string Lexer::ReadNumber() {
     return result;
 }
 
+// 判断是否是汉字首字节（1110xxxx）
+bool Lexer::IsChineseCharStart(char32_t c) {
+    return (c & 0xE0) == 0xE0; // 0xE0 = 11100000
+}
+
+// 吞掉完整UTF-8汉字（3字节）
+Token Lexer::ExtractHanzi() {
+    std::string zhchar;
+    zhchar += source[position++]; // 吞第1字节
+    zhchar += source[position++]; // 吞第2字节
+    zhchar += source[position++]; // 吞第3字节
+    return {TokenType::ZHCHAR, zhchar, line, column};
+}
+
+// 判断是否是有效UTF-8起始字节
+bool IsUTF8StartByte(unsigned char c) {
+    if ((c & 0x80) == 0) return false;  // ASCII字符交给原有逻辑
+    return (c & 0xC0) == 0xC0;          // 110xxxxx或111xxxxx
+}
+
+// 吞掉一个完整UTF-8字符（1-4字节）
+Token Lexer::ExtractUTF8Char() {
+    int len = 1;
+    if ((source[position] & 0xF0) == 0xF0) len = 4;  // 11110xxx
+    else if ((source[position] & 0xE0) == 0xE0) len = 3; // 1110xxxx
+    else if ((source[position] & 0xC0) == 0xC0) len = 2; // 110xxxxx
+
+    std::string utf8_char;
+    for (int i = 0; i < len && !IsAtEnd(); ++i) {
+        utf8_char += source[position++];
+    }
+    return {TokenType::UNICODE_CHAR, utf8_char, line, column};
+}
+
 Token Lexer::NextToken() {
     // 跳过空格、文件结尾
     SkipWhitespace();
@@ -64,6 +98,9 @@ Token Lexer::NextToken() {
     if (IsAtEnd()) {
         return {TokenType::EOF_TOKEN, "", line, column};
     }
+
+    if (IsUTF8StartByte(source[position])) return ExtractUTF8Char();
+    if (IsChineseCharStart(source[position])) return ExtractHanzi();
 
     char c = Peek();
 

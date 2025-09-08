@@ -4,6 +4,7 @@
 #include <string>
 #include "token.h"
 #include <unordered_map>
+#include <stdint.h>
 
 std::string token_type_to_string(TokenType type);
 
@@ -17,12 +18,16 @@ private:
     void SkipWhitespace();
     // void SkipComment();
     char Advance();
-    [[nodiscard]] char Peek() const;
+    [[nodiscard]] char32_t Peek() const;
     // [[nodiscard]] char PeekNext() const;
     [[nodiscard]] bool IsAtEnd() const;
 
     std::string ReadIdentifier();
     std::string ReadNumber();
+
+    Token ExtractHanzi();
+    Token ExtractUTF8Char();
+    bool IsChineseCharStart(char32_t c);
 
     std::string source;
     size_t position;
