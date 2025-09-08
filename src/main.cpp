@@ -2,6 +2,7 @@
 #include <sstream>
 #include <fstream>
 #include "../include/lexer.h"
+#include "../include/ast.h"
 
 int main(int argc, char* argv[]) {
 
