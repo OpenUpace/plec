@@ -19,6 +19,8 @@ enum class TokenType {
     // other
     IDENTIFIER,
     NUMBER,
+    UNICODE_CHAR,
+    ZHCHAR,
     LEFT_PAREN,
     RIGHT_PAREN,
     LEFT_BRACE,
