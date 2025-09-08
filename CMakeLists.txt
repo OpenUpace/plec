@@ -5,8 +5,9 @@ set(CMAKE_CXX_STANDARD 11)
 
 add_executable(vlc
         src/Lexer.cpp
+        src/main.cpp
+        include/Parser.h
         src/Parser.cpp
-        src/AST.cpp
-        src/main.cpp)
+        include/ast.h)
 
 target_include_directories(vlc PRIVATE include)
