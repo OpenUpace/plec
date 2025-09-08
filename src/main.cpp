@@ -1,7 +1,7 @@
 #include <iostream>
 #include <sstream>
 #include <fstream>
-#include "../include/Lexer.h"
+#include "../include/lexer.h"
 
 int main(int argc, char* argv[]) {
 
