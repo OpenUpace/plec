@@ -12,9 +12,13 @@ typedef struct ASTNode {
         struct {
             struct ASTNode *left;
             struct ASTNode *right;
-            TokenType op;
+            char op;
         } binary_op;
     } data;
 } ASTNode;
+
+ASTNode* createNumberCode(int value);
+ASTNode* createBinanyOp(char op, ASTNode* left, ASTNode* right);
+void printAST(ASTNode* node);
 
 #endif

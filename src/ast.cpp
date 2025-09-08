@@ -1,4 +1,4 @@
-#include <include/ast.h>
+#include "../include/ast.h"
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -7,9 +7,10 @@ ASTNode* createNumberCode(int value)
     ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
     node->type = NUMBER;
     node->data.number = value;
+    return node;
 }
 
-ASTNode* createBinanyOp(TokenType op, ASTNode* left, ASTNode* right)
+ASTNode* createBinanyOp(char op, ASTNode* left, ASTNode* right)
 {
     ASTNode* node = (ASTNode*)malloc(sizeof(ASTNode));
     node->type = BINARY_OP;
@@ -29,10 +30,8 @@ void printAST(ASTNode* node)
         printf("%d ", node->data.number);
         break;
     case BINARY_OP:
-        printf("this is test, future.\n");
-
-    default:
-        printf("error!\n");
-        break;
+        printAST(node->data.binary_op.left);
+        printAST(node->data.binary_op.right);
+        printf("%c ", node->data.binary_op.op);
     }
 }
