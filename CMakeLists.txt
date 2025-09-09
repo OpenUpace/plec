@@ -13,4 +13,4 @@ add_executable(vlc
 
 target_include_directories(vlc PRIVATE include)
 
-add_compile_options(-g)
+add_compile_options(-Wall -Wextra -Werror)
