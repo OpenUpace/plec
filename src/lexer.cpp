@@ -122,16 +122,6 @@ Token Lexer::NextToken() {
         }
     }
 
-    // 元符号：例@，!
-    if (isalpha(c) || c == '@' || c == '!') {
-        c = Advance();
-        std::string ident = ReadIdentifier();
-        const auto it = keywords.find(ident);
-        if (it != keywords.end()) {
-            return {it->second, ident, line, column};
-        }
-    }
-
     // 数字
     if (isdigit(c)) {
         std::string number = ReadNumber();
