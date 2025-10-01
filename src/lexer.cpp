@@ -57,7 +57,7 @@ std::string Lexer::ReadNumber() {
 }
 
 // 判断是否是汉字首字节（1110xxxx）
-bool Lexer::IsChineseCharStart(char32_t c) {
+bool Lexer::IsChineseCharStart(const char32_t c) {
     return (c & 0xE0) == 0xE0; // 0xE0 = 11100000
 }
 
@@ -71,7 +71,7 @@ Token Lexer::ExtractHanzi() {
 }
 
 // 判断是否是有效UTF-8起始字节
-bool IsUTF8StartByte(unsigned char c) {
+bool IsUTF8StartByte(const unsigned char c) {
     if ((c & 0x80) == 0) return false;  // ASCII字符交给原有逻辑
     return (c & 0xC0) == 0xC0;          // 110xxxxx或111xxxxx
 }
@@ -165,32 +165,4 @@ Token Lexer::NextToken() {
             return {TokenType::UNKNOWN, "", line, column};
     }
 
-}
-
-std::string token_type_to_string(const TokenType type) {
-    switch (type) {
-        case TokenType::FUNCTION: return "FN";
-        case TokenType::RETURN: return "RETURN";
-        case TokenType::INT: return "INT";
-        case TokenType::CHAR: return "CHAR";
-        case TokenType::MODULE: return "MODULE";
-        case TokenType::USE: return "USE";
-        case TokenType::COLON: return "COLON";
-        case TokenType::COLON_COLON: return "COLON_COLON";
-        case TokenType::IDENTIFIER: return "IDENTIFIER";
-        case TokenType::NUMBER: return "NUMBER";
-        case TokenType::PLUS: return "PLUS";
-        case TokenType::MINUS: return "MINUS";
-        case TokenType::MULTIPLICATION: return "MULTIPLICATION";
-        case TokenType::DIVIDE: return "DIVIDE";
-        case TokenType::LEFT_PAREN: return "LEFT_PAREN";
-        case TokenType::RIGHT_PAREN: return "RIGHT_PAREN";
-        case TokenType::LEFT_BRACE: return "LEFT_BRACE";
-        case TokenType::RIGHT_BRACE: return "RIGHT_BRACE";
-        case TokenType::COMMA: return "COMMA";
-        case TokenType::SEMICOLON: return "SEMICOLON";
-        case TokenType::EOF_TOKEN: return "EOF";
-        case TokenType::UNKNOWN: return "UNKNOWN";
-        default: return "???";
-    }
 }
