@@ -17,6 +17,7 @@ private:
 
     ASTNode* paserExpression();
     ASTNode* parsePrimary();
+    ASTNode* parseNumber();
     ASTNode* parseAdditiveExpr();
     ASTNode* parseMultiplicativeExpr();
 
