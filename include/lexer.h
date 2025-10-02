@@ -1,38 +1,14 @@
-#ifndef _LEXER_H
-#define _LEXER_H
-
-#include <stddef.h>
-
-typedef enum
-{
-    NUMBER,
-    INENT,
-    EOF
+typedef enum {
+    TOKEN_NUMBER,
+    TOKEN_IDENT,
+    TOKEN_KEYWORD,
+    TOKEN_EOF,
+    TOKEN_UNKNOWN
 } TokenType;
 
-typedef struct
-{
+typedef struct {
     TokenType type;
-    const char* value;
-    int line;
-    int column;
+    char lexeme[64]; // or allocate dynamically for longer lexemes
 } Token;
 
-typedef struct Lexer Lexer;
-
-struct Lexer
-{
-    Token nextToken();
-
-    void SkipWhitespace();
-    char Advance();
-    char Peek();
-
-    const char* source;
-    size_t position;
-    int line;
-    int column;
-};
-
-
-#endif
+Token get_next_token(FILE *fp);
