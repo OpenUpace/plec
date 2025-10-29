@@ -1,9 +1,12 @@
+#ifndef LEXER_H
+#define LEXER_H
+
 typedef enum {
-    TOKEN_NUMBER,
-    TOKEN_IDENT,
-    TOKEN_KEYWORD,
-    TOKEN_EOF,
-    TOKEN_UNKNOWN
+    NUMBER,
+    IDENT,
+    KEYWORD,
+    _EOF,
+    UNKNOWN
 } TokenType;
 
 typedef struct {
@@ -12,3 +15,5 @@ typedef struct {
 } Token;
 
 Token get_next_token(FILE *fp);
+
+#endif
