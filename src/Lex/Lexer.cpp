@@ -1,7 +1,7 @@
 #include "catm/Lex/Lexer.h"
 #include "catm/Lex/TokenTypes.h"
-#include <iostream>
 #include <fstream>
+#include <iostream>
 #include <sstream>
 
 static std::string IdentifierStr;
@@ -15,14 +15,15 @@ int catm::Lexer::gettok() {
     while (CurChar != EOF && isspace(CurChar))
         advance();
 
-    if (CurChar != EOF && isalpha(CurChar)) { // identifiter: [a-zA-Z][a-zA-Z0-9]*
+    if (CurChar != EOF &&
+        isalpha(CurChar)) { // identifiter: [a-zA-Z][a-zA-Z0-9]*
         IdentifierStr = CurChar;
         advance();
         while (CurChar != EOF && isalnum(CurChar)) {
             IdentifierStr += CurChar;
             advance();
         }
-        
+
         const auto it = keywords.find(IdentifierStr);
         if (it != keywords.end()) {
             return it->second;
@@ -30,13 +31,14 @@ int catm::Lexer::gettok() {
         return tok_identifier;
     }
 
-    if (CurChar != EOF && isdigit(CurChar) || CurChar == '.') { // Number: [0-9.]+
+    if (CurChar != EOF && isdigit(CurChar) ||
+        CurChar == '.') { // Number: [0-9.]+
         std::string NumStr;
         do {
             NumStr += CurChar;
             advance();
         } while (CurChar != EOF && isdigit(CurChar) || CurChar == '.');
-        
+
         NumVal = strtod(NumStr.c_str(), nullptr);
         return tok_number;
     }
@@ -45,8 +47,8 @@ int catm::Lexer::gettok() {
         do {
             advance();
         } while (CurChar != EOF && CurChar != '\n' && CurChar != 'r');
-        
-        if (CurChar != EOF) 
+
+        if (CurChar != EOF)
             return gettok();
     }
 

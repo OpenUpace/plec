@@ -1,8 +1,8 @@
 #ifndef CATMC_TOKEN_TYPES_H
 #define CATMC_TOKEN_TYPES_H
 
-#include <unordered_map>
 #include <string>
+#include <unordered_map>
 enum Token {
     tok_eof = -1,
 
@@ -22,12 +22,8 @@ enum Token {
 };
 
 std::unordered_map<std::string, Token> keywords = {
-    {"func", tok_func},
-    {"extern", tok_extern},
-    {"if", tok_if},
-    {"then", tok_then},
-    {"else", tok_else},
-    {"for", tok_for},
+    {"func", tok_func}, {"extern", tok_extern}, {"if", tok_if},
+    {"then", tok_then}, {"else", tok_else},     {"for", tok_for},
     {"in", tok_in},
 };
 
