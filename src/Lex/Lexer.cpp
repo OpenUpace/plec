@@ -62,7 +62,7 @@ int catm::Lexer::gettok() {
 
 int main(int argc, char *argv[]) {
     // std::ifstream file(argv[1]);
-    std::string test_code = "func";
+    std::string test_code = "for";
     std::istringstream file(test_code);
     catm::Lexer l(file);
     int tok;
