@@ -3,6 +3,7 @@ project(catmc)
 
 set(CMAKE_CXX_STANDARD 11)
 
-add_executable(catmc catmc.cpp)
+include_directories(include)
+add_executable(catmc src/Lex/Lexer.cpp)
 
 add_compile_options(-Wall -Wextra -Werror)

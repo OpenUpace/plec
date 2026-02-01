@@ -1,7 +1,8 @@
-.idea/
-.vscode/
-cmake-build-debug/
-CMakeFiles/
+.idea
+.vscode
+.cache
+cmake-build-debug
+CMakeFiles
 
 build/
 
