@@ -1,11 +1,7 @@
 #include "catm/Lex/Lexer.h"
-#include "catm/Lex/TokenTypes.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
-
-static std::string IdentifierStr;
-static double NumVal;
 
 /// Lexer
 
@@ -24,24 +20,28 @@ void catm::Lexer::advance() {
 
 /// @brief Return the next token from standard input.
 /// @return Next token.
-int catm::Lexer::gettok() {
+catm::Token catm::Lexer::gettok() {
+    Token tok;
+    tok.Loc = CurLoc;
     while (CurChar != EOF && isspace(CurChar))
         advance();
 
     if (CurChar != EOF &&
         isalpha(CurChar)) { // identifiter: [a-zA-Z][a-zA-Z0-9]*
-        IdentifierStr = CurChar;
+        tok.IdentifierStr = CurChar;
         advance();
         while (CurChar != EOF && isalnum(CurChar)) {
-            IdentifierStr += CurChar;
+            tok.IdentifierStr += CurChar;
             advance();
         }
 
-        const auto it = keywords.find(IdentifierStr);
+        const auto it = keywords.find(tok.IdentifierStr);
         if (it != keywords.end()) {
-            return it->second;
+            tok.type = it->second;
+            return tok;
         }
-        return tok_identifier;
+        tok.type = tok_identifier;
+        return tok;
     }
 
     if (CurChar != EOF && isdigit(CurChar) ||
@@ -52,8 +52,9 @@ int catm::Lexer::gettok() {
             advance();
         } while (CurChar != EOF && isdigit(CurChar) || CurChar == '.');
 
-        NumVal = strtod(NumStr.c_str(), nullptr);
-        return tok_number;
+        tok.NumVal = strtod(NumStr.c_str(), nullptr);
+        tok.type = tok_number;
+        return tok;
     }
 
     if (CurChar == '#') {
@@ -65,12 +66,15 @@ int catm::Lexer::gettok() {
             return gettok();
     }
 
-    if (CurChar == EOF)
-        return tok_eof;
+    if (CurChar == EOF) {
+        tok = tok_eof;
+        return tok;
+    }
 
     int ThisChar = CurChar;
+    tok.type = ThisChar;
     advance();
-    return ThisChar;
+    return tok;
 }
 
 int main(int argc, char *argv[]) {
@@ -78,9 +82,10 @@ int main(int argc, char *argv[]) {
     std::string test_code = "for";
     std::istringstream file(test_code);
     catm::Lexer l(file);
-    int tok;
+    catm::Token tok;
     do {
         tok = l.gettok();
-        std::cout << tok << std::endl;
-    } while (tok != tok_eof);
+        std::cout << tok.type << std::endl;
+        std::cout << tok.IdentifierStr << std::endl;
+    } while (tok.type != catm::tok_eof);
 }

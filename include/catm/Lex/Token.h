@@ -1,17 +1,42 @@
 #ifndef CATM_TOKEN_H
 #define CATM_TOKEN_H
 
-enum {
-    tok_eof = -1,
-    tok_func = -2,
-    tok_extern = -3,
-    tok_identifier = -4,
-    tok_number = -5,
-    tok_if = -6,
-    tok_then = -7,
-    tok_else = -8,
-    tok_for = -9,
-    tok_in = -10,
-} Type;
+#include "catm/Basic/SourceLocation.h"
+#include <string>
+#include <unordered_map>
 
+namespace catm {
+enum Type {
+    tok_eof = -1,
+    tok_unknown = -2,
+    tok_func = -3,
+    tok_extern = -4,
+    tok_identifier = -5,
+    tok_number = -6,
+    tok_if = -7,
+    tok_then = -8,
+    tok_else = -9,
+    tok_for = -10,
+    tok_in = -11,
+};
+
+struct Token {
+    int type;
+    std::string IdentifierStr;
+    double NumVal;
+    SourceLocation Loc;
+
+    Token(Type t = tok_unknown,
+        const std::string& id = "",
+        double num = 0.0,
+        SourceLocation l = {1, 1, 0})
+      : type(t), IdentifierStr(id), NumVal(num), Loc(l) {}
+};
+
+std::unordered_map<std::string, Type> keywords = {
+    {"func", tok_func}, {"extern", tok_extern}, {"if", tok_if},
+    {"then", tok_then}, {"else", tok_else},     {"for", tok_for},
+    {"in", tok_in},
+};
+}
 #endif // Token.h
