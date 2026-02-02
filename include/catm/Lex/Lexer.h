@@ -12,18 +12,7 @@ class Lexer {
 
   public:
     explicit Lexer(std::istream &input) : input(input) {}
-    void advance() {
-        CurChar = input.get();
-        if (CurChar != EOF) {
-            CurLoc.offset++;
-            if (CurChar == '\n') {
-                CurLoc.line++;
-                CurLoc.column = 1;
-            } else
-                CurLoc.column++;
-        } else
-            CurChar = EOF;
-    }
+    void advance();
     int gettok();
 };
 } // namespace catm
