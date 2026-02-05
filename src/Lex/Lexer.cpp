@@ -1,7 +1,13 @@
 #include "catm/Lex/Lexer.h"
-#include <fstream>
-#include <iostream>
-#include <sstream>
+
+/// --
+namespace catm {
+std::unordered_map<std::string, Type> keywords = {
+    {"func", tok_func}, {"extern", tok_extern}, {"if", tok_if},
+    {"then", tok_then}, {"else", tok_else},     {"for", tok_for},
+    {"in", tok_in},
+};
+}
 
 /// Lexer
 
@@ -60,7 +66,7 @@ catm::Token catm::Lexer::gettok() {
     if (CurChar == '#') {
         do {
             advance();
-        } while (CurChar != EOF && CurChar != '\n' && CurChar != 'r');
+        } while (CurChar != EOF && CurChar != '\n' && CurChar != '\r');
 
         if (CurChar != EOF)
             return gettok();
@@ -77,15 +83,3 @@ catm::Token catm::Lexer::gettok() {
     return tok;
 }
 
-int main(int argc, char *argv[]) {
-    // std::ifstream file(argv[1]);
-    std::string test_code = "for";
-    std::istringstream file(test_code);
-    catm::Lexer l(file);
-    catm::Token tok;
-    do {
-        tok = l.gettok();
-        std::cout << tok.type << std::endl;
-        std::cout << tok.IdentifierStr << std::endl;
-    } while (tok.type != catm::tok_eof);
-}

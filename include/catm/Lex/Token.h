@@ -33,10 +33,6 @@ struct Token {
       : type(t), IdentifierStr(id), NumVal(num), Loc(l) {}
 };
 
-std::unordered_map<std::string, Type> keywords = {
-    {"func", tok_func}, {"extern", tok_extern}, {"if", tok_if},
-    {"then", tok_then}, {"else", tok_else},     {"for", tok_for},
-    {"in", tok_in},
-};
+extern std::unordered_map<std::string, Type> keywords;
 }
 #endif // Token.h
