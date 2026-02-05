@@ -4,9 +4,9 @@
 #include <stdint.h>
 
 struct SourceLocation {
-    uint64_t line;
-    uint64_t column;
-    uint64_t offset;
+    uint32_t line;
+    uint32_t column;
+    uint32_t offset;
 };
 
 #endif
