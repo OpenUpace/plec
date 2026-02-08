@@ -1,0 +1,8 @@
+CompileFlags:
+  CompilationDatabase: build/
+  Compiler: /usr/bin/clang++
+  Add:
+    - "-I/usr/include"
+    - "-I/usr/include/c++/13"
+    - "-I/usr/include/x86_64-linux-gnu/c++/13"
+    - "-std=c++17"
