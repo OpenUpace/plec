@@ -3,6 +3,7 @@
 .cache
 cmake-build-debug
 CMakeFiles
+CMakeLists.txt.user
 
 build/
 
