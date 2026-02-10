@@ -7,5 +7,5 @@ set(CMAKE_CXX_STANDARD 17)
 
 include_directories(include)
 add_executable(catmc src/Lex/Lexer.cpp
-                     src/Parser/Parser.cpp)
-
+                     src/Parse/Parser.cpp
+                     src/Driver/Lib.cpp)
