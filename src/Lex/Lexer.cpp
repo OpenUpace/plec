@@ -1,7 +1,7 @@
-#include "catm/Lex/Lexer.h"
+#include "ple/Lex/Lexer.h"
 
 /// --
-namespace catm {
+namespace ple {
 std::unordered_map<std::string, Type> keywords = {
     {"func", tok_func}, {"extern", tok_extern}, {"if", tok_if},
     {"then", tok_then}, {"else", tok_else},     {"for", tok_for},
@@ -11,7 +11,7 @@ std::unordered_map<std::string, Type> keywords = {
 
 /// Lexer
 
-void catm::Lexer::advance() {
+void ple::Lexer::advance() {
     CurChar = input.get();
     if (CurChar != EOF) {
         CurLoc.offset++;
@@ -26,7 +26,7 @@ void catm::Lexer::advance() {
 
 /// @brief Return the next token from standard input.
 /// @return Next token.
-catm::Token catm::Lexer::gettok() {
+ple::Token ple::Lexer::gettok() {
     Token tok;
     tok.Loc = CurLoc;
     while (CurChar != EOF && isspace(CurChar))

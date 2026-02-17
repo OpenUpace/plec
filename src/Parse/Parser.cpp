@@ -1,26 +1,26 @@
-#include "catm/Parse/Parser.h"
-#include "catm/Lex/Lexer.h"
-#include "catm/Lex/Token.h"
-#include "catm/Parse/ASTNode.h"
+#include "ple/Parse/Parser.h"
+#include "ple/Lex/Lexer.h"
+#include "ple/Lex/Token.h"
+#include "ple/AST/ASTNode.h"
 
-catm::Token catm::Parser::getNextToken() {
+ple::Token ple::Parser::getNextToken() {
     CurTok = lexer.gettok();
     return CurTok;
 }
 
-std::unique_ptr<catm::ExprAST> catm::Parser::LogError(const char *Str) {
+std::unique_ptr<ple::ExprAST> ple::Parser::LogError(const char *Str) {
     fprintf(stderr, "[line %d, column %d] Error: %s\n", CurTok.Loc.line,
             CurTok.Loc.column, Str);
     return nullptr;
 }
 
-std::unique_ptr<catm::PrototypeAST> catm::Parser::LogErrorP(const char *Str) {
+std::unique_ptr<ple::PrototypeAST> ple::Parser::LogErrorP(const char *Str) {
     LogError(Str);
     return nullptr;
 }
 
 /// GetTokPrecedence - Get the precedence of the pending binary operator token.
-int catm::Parser::GetTokPrecedence() {
+int ple::Parser::GetTokPrecedence() {
     if (!isascii(CurTok.type))
         return -1;
 
@@ -32,14 +32,14 @@ int catm::Parser::GetTokPrecedence() {
 }
 
 /// numberexpr ::= number
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseNumberExpr() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseNumberExpr() {
     auto Result = std::make_unique<NumberExprAST>(CurTok.NumVal);
     getNextToken(); // consume the number
     return std::move(Result);
 }
 
 /// parenexpr ::= '(' expressionon ')'
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseParenExpr() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseParenExpr() {
     getNextToken(); // eat (.
     auto V = ParseExpression();
     if (!V)
@@ -54,7 +54,7 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParseParenExpr() {
 /// identifierexpur
 ///   ::= identifier
 ///   ::= identifier '(' expression* ')'
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseIdentifierExpr() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseIdentifierExpr() {
     std::string IdName = CurTok.IdentifierStr;
 
     getNextToken(); // eat identifier.
@@ -88,7 +88,7 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParseIdentifierExpr() {
 }
 
 /// ifexpr ::= 'if' expression 'then' expression 'else' expression
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseIfExpr() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseIfExpr() {
     getNextToken(); // eat the if.
 
     // condition.
@@ -118,7 +118,7 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParseIfExpr() {
 }
 
 /// forexpr ::= 'for' identifier '=' expr ',' expr (',' expr)? 'in' expression
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseForExpr() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseForExpr() {
     getNextToken(); // eat the for.
 
     if (CurTok.type != tok_identifier)
@@ -170,7 +170,7 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParseForExpr() {
 ///   ::= parenexpr
 ///   ::= ifexpr
 ///   ::= forexpr
-std::unique_ptr<catm::ExprAST> catm::Parser::ParsePrimary() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParsePrimary() {
     switch (CurTok.type) {
     default:
         return LogError("unknown token when expecting an expression");
@@ -189,8 +189,8 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParsePrimary() {
 
 /// binoprhs
 ///   ::= ('+' primary)*
-std::unique_ptr<catm::ExprAST>
-catm::Parser::ParseBinOpRHS(int ExprPrec, std::unique_ptr<ExprAST> LHS) {
+std::unique_ptr<ple::ExprAST>
+ple::Parser::ParseBinOpRHS(int ExprPrec, std::unique_ptr<ExprAST> LHS) {
     // If this is a binop, find its precedence.
     while (true) {
         int TokPrec = GetTokPrecedence();
@@ -227,7 +227,7 @@ catm::Parser::ParseBinOpRHS(int ExprPrec, std::unique_ptr<ExprAST> LHS) {
 /// expression
 ///   ::= primary binoprhs
 ///
-std::unique_ptr<catm::ExprAST> catm::Parser::ParseExpression() {
+std::unique_ptr<ple::ExprAST> ple::Parser::ParseExpression() {
     auto LHS = ParsePrimary();
     if (!LHS)
         return nullptr;
@@ -237,7 +237,7 @@ std::unique_ptr<catm::ExprAST> catm::Parser::ParseExpression() {
 
 /// prototype
 ///   ::= id '(' id* ')'
-std::unique_ptr<catm::PrototypeAST> catm::Parser::ParsePrototype() {
+std::unique_ptr<ple::PrototypeAST> ple::Parser::ParsePrototype() {
     if (CurTok.type != tok_identifier)
         return LogErrorP("Expected function name in prototype");
 
@@ -260,7 +260,7 @@ std::unique_ptr<catm::PrototypeAST> catm::Parser::ParsePrototype() {
 }
 
 /// definition ::= 'def' prototype expression
-std::unique_ptr<catm::FunctionAST> catm::Parser::ParseDefinition() {
+std::unique_ptr<ple::FunctionAST> ple::Parser::ParseDefinition() {
     getNextToken(); // eat def.
     auto Proto = ParsePrototype();
     if (!Proto)
@@ -272,7 +272,7 @@ std::unique_ptr<catm::FunctionAST> catm::Parser::ParseDefinition() {
 }
 
 /// toplevelexpr ::= expression
-std::unique_ptr<catm::FunctionAST> catm::Parser::ParseTopLevelExpr() {
+std::unique_ptr<ple::FunctionAST> ple::Parser::ParseTopLevelExpr() {
     if (auto E = ParseExpression()) {
         // Make an anonymous proto.
         auto Proto = std::make_unique<PrototypeAST>("__anon_expr",
@@ -283,7 +283,7 @@ std::unique_ptr<catm::FunctionAST> catm::Parser::ParseTopLevelExpr() {
 }
 
 /// external ::= 'extern' prototype
-std::unique_ptr<catm::PrototypeAST> catm::Parser::ParseExtern() {
+std::unique_ptr<ple::PrototypeAST> ple::Parser::ParseExtern() {
     getNextToken(); // eat extern.
     return ParsePrototype();
 }

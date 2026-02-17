@@ -1,11 +1,11 @@
-#ifndef CATMC_PARSER_H
-#define CATMC_PARSER_H
+#ifndef PLEC_PARSER_H
+#define PLEC_PARSER_H
 
-#include "catm/Lex/Lexer.h"
-#include "catm/Parse/ASTNode.h"
+#include "ple/Lex/Lexer.h"
+#include "ple/AST/ASTNode.h"
 #include <map>
 
-namespace catm {
+namespace ple {
 class Parser {
   public:
     explicit Parser(Lexer lexer) : lexer(lexer) {}
@@ -13,7 +13,7 @@ class Parser {
     std::map<char, int> BinopPrecedence;
 
     std::unique_ptr<ExprAST> LogError(const char *Str);
-    std::unique_ptr<catm::PrototypeAST> LogErrorP(const char *Str);
+    std::unique_ptr<ple::PrototypeAST> LogErrorP(const char *Str);
     Token getNextToken();
 
     std::unique_ptr<ExprAST> ParseExpression();
@@ -35,6 +35,6 @@ class Parser {
     int GetTokPrecedence();
 
 };
-} // namespace catm
+} // namespace ple
 
-#endif // !CATMC_PARSER_H
+#endif // !PLEC_PARSER_H

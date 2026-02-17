@@ -1,11 +1,11 @@
-#ifndef CATMC_AST_NODE_H
-#define CATMC_AST_NODE_H
+#ifndef PLEC_AST_NODE_H
+#define PLEC_AST_NODE_H
 
 #include <memory>
 #include <string>
 #include <vector>
 
-namespace catm {
+namespace ple {
 /// ExprAST - Base class for all expression nodes.
 class ExprAST {
   public:
@@ -95,6 +95,6 @@ class FunctionAST {
                 std::unique_ptr<ExprAST> Body)
         : Proto(std::move(Proto)), Body(std::move(Body)) {}
 };
-} // namespace catm
+} // namespace ple
 
-#endif // !CATMC_AST_NODE_H
+#endif // !PLEC_AST_NODE_H

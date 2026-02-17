@@ -1,7 +1,7 @@
-#include "catm/Parse/Parser.h"
+#include "ple/Parse/Parser.h"
 #include <iostream>
 
-using namespace catm;
+using namespace ple;
 static Lexer lexer(std::cin);
 static Parser parser(lexer);
 

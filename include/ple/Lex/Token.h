@@ -1,11 +1,11 @@
 #ifndef CATM_TOKEN_H
 #define CATM_TOKEN_H
 
-#include "catm/Basic/SourceLocation.h"
+#include "ple/Basic/SourceLocation.h"
 #include <string>
 #include <unordered_map>
 
-namespace catm {
+namespace ple {
 enum Type {
     tok_eof = -1,
     tok_unknown = -2,
