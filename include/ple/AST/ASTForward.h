@@ -6,6 +6,7 @@
 #include "ple/AST/Function.h"
 #include "ple/AST/Literal.h"
 #include "ple/AST/Operation.h"
+#include <variant>
 
 namespace ple {
 namespace AST {
@@ -18,6 +19,8 @@ class ForExprAST;
 class CallExprAST;
 class PrototypeAST;
 class FunctionAST;
+
+using Expr = std::variant<NumberExprAST, VariableExprAST, BinaryExprAST, IfExprAST, ForExprAST, CallExprAST, PrototypeAST, FunctionAST>;
 } // namespace AST
 } // namespace ple
 
