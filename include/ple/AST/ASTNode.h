@@ -6,6 +6,7 @@
 #include <vector>
 
 namespace ple {
+namespace AST {
 /// ExprAST - Base class for all expression nodes.
 class ExprAST {
   public:
@@ -95,6 +96,7 @@ class FunctionAST {
                 std::unique_ptr<ExprAST> Body)
         : Proto(std::move(Proto)), Body(std::move(Body)) {}
 };
+} // namespace AST
 } // namespace ple
 
 #endif // !PLEC_AST_NODE_H
