@@ -1,7 +1,7 @@
 #include "ple/Parse/Parser.h"
 #include "ple/Lex/Lexer.h"
 #include "ple/Lex/Token.h"
-#include "ple/AST/ASTNode.h"
+#include "ple/AST/ASTForward.h"
 
 using namespace ple;
 using namespace ple::AST;

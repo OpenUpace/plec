@@ -1,5 +1,5 @@
-#ifndef PLEC_AST_NODE_H
-#define PLEC_AST_NODE_H
+#ifndef PLEC_AST_FORWARD_H
+#define PLEC_AST_FORWARD_H
 
 #include "ple/AST/Expr.h"
 #include "ple/AST/ControlFlow.h"

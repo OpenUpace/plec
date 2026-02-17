@@ -2,7 +2,7 @@
 #define PLEC_PARSER_H
 
 #include "ple/Lex/Lexer.h"
-#include "ple/AST/ASTNode.h"
+#include "ple/AST/ASTForward.h"
 #include <map>
 
 namespace ple {
