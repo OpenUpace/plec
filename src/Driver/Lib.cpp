@@ -5,7 +5,6 @@ using namespace catm;
 static Lexer lexer(std::cin);
 static Parser parser(lexer);
 
-
 static void HandleDefinition() {
     if (parser.ParseDefinition()) {
         fprintf(stderr, "Parsed a function definition.\n");
@@ -65,11 +64,11 @@ int main() {
     parser.BinopPrecedence['-'] = 20;
     parser.BinopPrecedence['*'] = 40; // highest.
 
-           // Prime the first token.
+    // Prime the first token.
     fprintf(stderr, "ready> ");
     parser.getNextToken();
 
-           // Run the main "interpreter loop" now.
+    // Run the main "interpreter loop" now.
     MainLoop();
 
     return 0;
