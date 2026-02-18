@@ -20,7 +20,7 @@ class CallExprAST;
 class PrototypeAST;
 class FunctionAST;
 
-using Expr = std::variant<NumberExprAST, VariableExprAST, BinaryExprAST, IfExprAST, ForExprAST, CallExprAST, PrototypeAST, FunctionAST>;
+using Expr = std::variant<ExprAST, NumberExprAST, VariableExprAST, BinaryExprAST, IfExprAST, ForExprAST, CallExprAST, PrototypeAST, FunctionAST>;
 } // namespace AST
 } // namespace ple
 
