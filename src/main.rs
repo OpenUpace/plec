@@ -1,3 +1,6 @@
+mod lexer;
+
 fn main() {
-    println!("Hello, world!");
+    let mut l = lexer::Lexer::new("func");
+    l.next_tok();
 }
