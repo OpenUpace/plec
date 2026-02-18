@@ -1,12 +1,1 @@
-.idea
-.vscode
-.cache
-cmake-build-debug
-CMakeFiles
-CMakeLists.txt.user
-
-build/
-
-*.o
-*.swp
-*.a
+/target
