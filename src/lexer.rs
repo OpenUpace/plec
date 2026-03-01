@@ -1,4 +1,4 @@
-pub enum Token {
+pub enum TokenType {
     Unknown,
     Eof,
     Identifier(String),
@@ -6,24 +6,34 @@ pub enum Token {
     Func,
 }
 
+pub struct Token {
+    tok: TokenType,
+    ident: Vec<char>,
+    num_val: f64,
+    position: usize,
+}
+
 pub struct Lexer {
-    input: Vec<char>,
-    pos: usize,
+    cur_char: Token,
 }
 
 impl Lexer {
     pub fn new(input: &str) -> Self {
         Self {
-            input: input.chars().collect(),
-            pos: 0,
+            cur_char: Token {
+                tok: TokenType::Unknown,
+                ident: input.chars().collect(),
+                num_val: 0.0,
+                position: 0,
+            },
         }
     }
 
-    pub fn next_tok(&mut self) -> Token {
+    pub fn next_tok(&mut self) -> TokenType {
         self.skip_whitespace();
 
         if self.is_eof() {
-            return Token::Eof;
+            return TokenType::Eof;
         }
 
         let ch = self.current_char();
@@ -36,24 +46,26 @@ impl Lexer {
         }
     }
 
-    fn read_identifier(&mut self) -> Token {
-        let start = self.pos;
+    fn read_identifier(&mut self) -> TokenType {
+        let start = self.cur_char.position;
         while !self.is_eof() && self.current_char().is_alphanumeric() {
             self.advance();
         }
 
-        let ident: String = self.input[start..self.pos].iter().collect();
+        let ident: String = self.cur_char.ident[start..self.cur_char.position]
+            .iter()
+            .collect();
 
         println!("IdentifierStr: {}", ident);
 
         match ident.as_str() {
-            "func" => return Token::Func,
-            _ => return Token::Identifier(ident),
+            "func" => TokenType::Func,
+            _ => return TokenType::Identifier(ident),
         }
     }
 
-    fn read_number(&mut self) -> Token {
-        let start = self.pos;
+    fn read_number(&mut self) -> TokenType {
+        let start = self.cur_char.position;
         while !self.is_eof() && self.current_char().is_digit(10) {
             self.advance();
         }
@@ -65,22 +77,24 @@ impl Lexer {
             }
         }
 
-        let num_str: String = self.input[start..self.pos].iter().collect();
-        let num = num_str.parse::<f64>().unwrap();
-        println!("NumVal: {}", num);
-        Token::Number(num.to_string())
+        let num_str: String = self.cur_char.ident[start..self.cur_char.position]
+            .iter()
+            .collect();
+        self.cur_char.num_val = num_str.parse::<f64>().unwrap();
+        println!("NumVal: {}", self.cur_char.num_val);
+        TokenType::Number(self.cur_char.num_val.to_string())
     }
 
     fn current_char(&self) -> char {
-        self.input[self.pos]
+        self.cur_char.ident[self.cur_char.position]
     }
 
     fn advance(&mut self) {
-        self.pos += 1
+        self.cur_char.position += 1
     }
 
     fn is_eof(&self) -> bool {
-        self.pos >= self.input.len()
+        self.cur_char.position >= self.cur_char.ident.len()
     }
 
     fn skip_whitespace(&mut self) {
