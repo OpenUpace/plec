@@ -15,7 +15,7 @@ int main(int argc, const char* argv[]) {
     CalcLexer lexer(&input);
     antlr4::CommonTokenStream tokens(&lexer);
     CalcParser parser(&tokens);
-    auto tree = parser.start();
+    auto tree = parser.prog();
     std::cout << "Ok! Node: " << antlr4::tree::Trees::toStringTree(tree, &parser) << std::endl;
     return 0;
 }

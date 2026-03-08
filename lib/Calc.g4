@@ -1,6 +1,6 @@
 grammar Calc;
 
-start: expr+ EOF;
+prog: expr+ EOF;
 expr: term (('+' | '-') term)*;
 
 term: factor (('*' | '/') factor)*;
