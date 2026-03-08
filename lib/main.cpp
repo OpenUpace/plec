@@ -3,11 +3,12 @@
 #include "antlr4-runtime.h"
 #include "CalcLexer.h"
 #include "CalcParser.h"
-#include "CalcBaseVisitor.h"
+#include "ple/IRGenerator.h"
 
 int main(int argc, const char* argv[]) {
     if (argc < 2) {
         std::cout << "Usage: plec <file>" << std::endl;
+        return 0;
     }
     std::ifstream stream;
     stream.open(argv[1]);
@@ -16,6 +17,11 @@ int main(int argc, const char* argv[]) {
     antlr4::CommonTokenStream tokens(&lexer);
     CalcParser parser(&tokens);
     auto tree = parser.prog();
-    std::cout << "Ok! Node: " << antlr4::tree::Trees::toStringTree(tree, &parser) << std::endl;
+    
+    IRGenerator gen("Calc");
+
+    gen.visitProg(tree);
+
+    gen.printIR();
     return 0;
 }
