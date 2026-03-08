@@ -1,10 +1,12 @@
 CXX = clang++
-CXXFLAGS = -std=c++17 -I generated/lib -I/usr/include/antlr4-runtime -lantlr4-runtime
+CXXFLAGS = -std=c++17 -g -fexceptions \
+			-Iinclude -Igenerated/lib -I/usr/include/antlr4-runtime -lantlr4-runtime \
+			-lLLVM-21
 
 TARGET = plec
-SRCS_LIB = $(wildcard lib/*.cpp)
+SRCS_IR_LIB = $(wildcard lib/IR/*.cpp)
 SRCS_GEN = $(wildcard generated/lib/*.cpp)
-SRCS = $(SRCS_LIB) $(SRCS_GEN)
+SRCS = lib/main.cpp $(SRCS_IR_LIB) $(SRCS_GEN)
 OBJS = $(SRCS:.cpp=.o)
 
 all: $(TARGET)
