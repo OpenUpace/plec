@@ -1,9 +1,9 @@
 grammar Calc;
 
 prog: expr+ EOF;
-expr: term (('+' | '-') term)*;
+expr: term (op = ('+' | '-') term)*;
 
-term: factor (('*' | '/') factor)*;
+term: factor (op = ('*' | '/') factor)*;
 
 factor: '(' expr ')' | INT;
 
