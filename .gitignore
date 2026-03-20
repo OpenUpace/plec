@@ -1,8 +1,1 @@
-.vscode/
-.idea/
-build/
-generated/*
-.cache/
-.o
-.exe
-compile_commands.json
+/target
