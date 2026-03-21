@@ -1,9 +1,13 @@
 mod ple;
 use chumsky::Parser;
+use inkwell::context::Context;
 use logos::Logos;
+use ple::ir::ir_codegen::Visistor;
 use ple::lex::lexer::Token;
 use ple::parse::parser::parser;
 use std::env;
+
+use crate::ple::ir::ir_codegen::IRCodegen;
 
 fn main() {
     //reads the input expression from the command line
@@ -37,6 +41,22 @@ fn main() {
             return;
         }
     };
+
+    let context = Context::create();
+
+    let mut codegen = IRCodegen::new(&context, "main");
+
+    let i64_type = context.i64_type();
+    let fn_type = i64_type.fn_type(&[], false);
+    let main_fn = codegen.module.add_function("main", fn_type, None);
+    let entry = context.append_basic_block(main_fn, "entry");
+    codegen.builder.position_at_end(entry);
+
+    let result = codegen.visit_expr(&ast);
+
+    let _ = codegen.builder.build_return(Some(&result));
+
+    codegen.module.print_to_stderr();
 
     println!("[result]: {:#?}", ast.eval());
 }
