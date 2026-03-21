@@ -2,12 +2,12 @@ mod ple;
 use chumsky::Parser;
 use inkwell::context::Context;
 use logos::Logos;
-use ple::ir::ir_codegen::Visistor;
+use ple::ir::ir_gen::Visistor;
 use ple::lex::lexer::Token;
 use ple::parse::parser::parser;
 use std::env;
 
-use crate::ple::ir::ir_codegen::IRCodegen;
+use crate::ple::ir::ir_gen::IRCodegen;
 
 fn main() {
     //reads the input expression from the command line

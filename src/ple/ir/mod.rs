@@ -1,1 +1,1 @@
-pub mod ir_codegen;
+pub mod ir_gen;
