@@ -6,15 +6,10 @@ pub enum Expr {
     // Integer literal.
     Int(isize),
 
-    // Unary minus.
-    Neg(Box<Expr>),
+    BinOp(Box<Expr>, char, Box<Expr>),
 
-    // Binary operators.
-    Add(Box<Expr>, Box<Expr>),
-    Sub(Box<Expr>, Box<Expr>),
-    Mul(Box<Expr>, Box<Expr>),
-    Div(Box<Expr>, Box<Expr>),
-    Mod(Box<Expr>, Box<Expr>),
+    // Unary minus.
+    Neg(()),
 }
 
 pub fn parser<'src>()
@@ -35,7 +30,7 @@ pub fn parser<'src>()
 
         let unary = just(Token::Minus)
             .repeated()
-            .foldr(atom, |_op, rhs| Expr::Neg(Box::new(rhs)));
+            .foldr(atom, |_op, _rhs| Expr::Neg(()));
 
         let binary_1 = unary.clone().foldl(
             just(Token::Multiply)
@@ -44,9 +39,9 @@ pub fn parser<'src>()
                 .then(unary)
                 .repeated(),
             |lhs, (op, rhs)| match op {
-                Token::Multiply => Expr::Mul(Box::new(lhs), Box::new(rhs)),
-                Token::Divide => Expr::Div(Box::new(lhs), Box::new(rhs)),
-                Token::Modulo => Expr::Mod(Box::new(lhs), Box::new(rhs)),
+                Token::Multiply => Expr::BinOp(Box::new(lhs), '*', Box::new(rhs)),
+                Token::Divide => Expr::BinOp(Box::new(lhs), '/', Box::new(rhs)),
+                Token::Modulo => Expr::BinOp(Box::new(lhs), '%', Box::new(rhs)),
                 _ => unreachable!(),
             },
         );
@@ -57,26 +52,12 @@ pub fn parser<'src>()
                 .then(binary_1)
                 .repeated(),
             |lhs, (op, rhs)| match op {
-                Token::Plus => Expr::Add(Box::new(lhs), Box::new(rhs)),
-                Token::Minus => Expr::Sub(Box::new(lhs), Box::new(rhs)),
+                Token::Plus => Expr::BinOp(Box::new(lhs), '+', Box::new(rhs)),
+                Token::Minus => Expr::BinOp(Box::new(lhs), '-', Box::new(rhs)),
                 _ => unreachable!(),
             },
         );
 
         binary_2
     })
-}
-
-impl Expr {
-    pub fn eval(&self) -> isize {
-        match self {
-            Expr::Int(n) => *n,
-            Expr::Neg(rhs) => -rhs.eval(),
-            Expr::Add(lhs, rhs) => lhs.eval() + rhs.eval(),
-            Expr::Sub(lhs, rhs) => lhs.eval() - rhs.eval(),
-            Expr::Mul(lhs, rhs) => lhs.eval() * rhs.eval(),
-            Expr::Div(lhs, rhs) => lhs.eval() / rhs.eval(),
-            Expr::Mod(lhs, rhs) => lhs.eval() % rhs.eval(),
-        }
-    }
 }

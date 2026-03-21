@@ -57,6 +57,4 @@ fn main() {
     let _ = codegen.builder.build_return(Some(&result));
 
     codegen.module.print_to_stderr();
-
-    println!("[result]: {:#?}", ast.eval());
 }
