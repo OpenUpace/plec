@@ -40,6 +40,56 @@ impl<'ctx> Visistor<'ctx> for IRCodegen<'ctx> {
                     _ => todo!(),
                 }
             }
+            Expr::Sub(lhs, rhs) => {
+                let lhs_val = self.visit_expr(lhs);
+                let rhs_val = self.visit_expr(rhs);
+
+                match (lhs_val, rhs_val) {
+                    (BasicValueEnum::IntValue(l), BasicValueEnum::IntValue(r)) => {
+                        let int_result = self.builder.build_int_sub(l, r, "addtmp");
+                        BasicValueEnum::IntValue(int_result.unwrap())
+                    }
+                    _ => todo!(),
+                }
+            }
+            Expr::Mul(lhs, rhs) => {
+                let lhs_val = self.visit_expr(lhs);
+                let rhs_val = self.visit_expr(rhs);
+
+                match (lhs_val, rhs_val) {
+                    (BasicValueEnum::IntValue(l), BasicValueEnum::IntValue(r)) => {
+                        let int_result = self.builder.build_int_mul(l, r, "addtmp");
+                        BasicValueEnum::IntValue(int_result.unwrap())
+                    }
+                    _ => todo!(),
+                }
+            }
+            Expr::Div(lhs, rhs) => {
+                // Unsigned div
+                let lhs_val = self.visit_expr(lhs);
+                let rhs_val = self.visit_expr(rhs);
+
+                match (lhs_val, rhs_val) {
+                    (BasicValueEnum::IntValue(l), BasicValueEnum::IntValue(r)) => {
+                        let int_result = self.builder.build_int_unsigned_div(l, r, "addtmp");
+                        BasicValueEnum::IntValue(int_result.unwrap())
+                    }
+                    _ => todo!(),
+                }
+            }
+            Expr::Mod(lhs, rhs) => {
+                // Unsigned Mod
+                let lhs_val = self.visit_expr(lhs);
+                let rhs_val = self.visit_expr(rhs);
+
+                match (lhs_val, rhs_val) {
+                    (BasicValueEnum::IntValue(l), BasicValueEnum::IntValue(r)) => {
+                        let int_result = self.builder.build_int_unsigned_rem(l, r, "addtmp");
+                        BasicValueEnum::IntValue(int_result.unwrap())
+                    }
+                    _ => todo!(),
+                }
+            }
             _ => todo!(),
         }
     }
