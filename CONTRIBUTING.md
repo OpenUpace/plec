@@ -11,8 +11,8 @@ Similar to Angular git commits, we also have this format:
 
 [Tag] Main message. 
 
-First, `[Tag]` is about the message, e.g. Question, PR, etc. Second, use markdown for code blocks: 
-```lang
-code
-```
+First, `[Tag]` is about the message, e.g. Question, PR, etc. 
+
+Second, use markdown for code blocks.
+
 Finally, welcome to contributing!
