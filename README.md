@@ -20,4 +20,4 @@ Welcome use ple! This is a small programming language for education.
 We thank you to contribute our codes. Please see the CONTRIBUTING.md before the real contributing.
 
 ## License
-To better contributing, we use the Apache 2.0 license.
+To better contributing, we use the Apache License 2.0.
