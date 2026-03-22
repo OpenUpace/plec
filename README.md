@@ -1,4 +1,4 @@
-Welcome use ple! This is a small programming language for education.
+Welcome use ple! This is a small programming language.
 
 > **Warning!!!**
 > 
