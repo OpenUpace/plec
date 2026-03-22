@@ -9,9 +9,13 @@ pub enum Expr {
     BinOp(Box<Expr>, char, Box<Expr>),
 
     // Unary minus.
+    // Note: Don't use it now.
     Neg(()),
 }
 
+/// Parser:
+/// A simple parse function in chumsky.
+/// Note: Just arithmetic operations now.
 pub fn parser<'src>()
 -> impl Parser<'src, &'src [Token], Expr, chumsky::extra::Err<chumsky::error::Simple<'src, Token>>>
 {

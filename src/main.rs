@@ -1,3 +1,6 @@
+// Hack: Not use encapsulated.
+// Note: Spaghetti Code.
+// TODO: fix this.
 mod ir;
 mod lex;
 mod parse;
@@ -44,6 +47,7 @@ fn main() {
         }
     };
 
+    // Hack: Not encapsulated.
     let context = Context::create();
 
     let mut codegen = IRCodegen::new(&context, "main");

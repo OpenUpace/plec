@@ -1,10 +1,12 @@
 use crate::parse::parser::Expr;
 use inkwell::{builder::Builder, context::Context, module::Module, values::BasicValueEnum};
 
+/// Visitor: Simple trait to impl.
 pub trait Visistor<'ctx> {
     fn visit_expr(&mut self, expr: &Expr) -> BasicValueEnum<'ctx>;
 }
 
+/// LLVM IR Codegen.
 pub struct IRCodegen<'ctx> {
     pub context: &'ctx Context,
     pub builder: Builder<'ctx>,
