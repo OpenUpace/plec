@@ -1,4 +1,4 @@
-use crate::Token;
+use crate::lex::lexer::Token;
 use chumsky::prelude::*;
 
 #[derive(Debug)]

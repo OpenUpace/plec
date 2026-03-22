@@ -1,18 +1,8 @@
-// Hack: Not use encapsulated.
-// Note: Spaghetti Code.
-// TODO: fix this.
-mod ir;
-mod lex;
-mod parse;
 use chumsky::Parser;
 use inkwell::context::Context;
-use ir::ir_gen::Visistor;
-use lex::lexer::Token;
 use logos::Logos;
-use parse::parser::parser;
+use plec::prelude::*;
 use std::env;
-
-use crate::ir::ir_gen::IRCodegen;
 
 fn main() {
     //reads the input expression from the command line
