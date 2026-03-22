@@ -4,6 +4,15 @@ Welcome use ple! This is a small programming language for education.
 > 
 > Ple Compiler(plec) is currently only a **personal experimental** project now. The code and APIs are **unstable**. **DO NOT** use in production environments!!!
 
+## Compile
+You should install the `rustc`, `cargo`, `git` then:
+```bash
+$ git clone https://github.com/OpenUpace/plec.git
+$ cd plec
+$ cargo build && cargo run -- '42+1'
+```
+> Note: plec doesn't have test now, so only in `cargo run` :-(
+
 ## Features
 - A simple calculator DSL now.
 - Compile to LLVM IR(use Inkwell).
