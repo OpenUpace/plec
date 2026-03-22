@@ -1,13 +1,15 @@
-mod ple;
+mod ir;
+mod lex;
+mod parse;
 use chumsky::Parser;
 use inkwell::context::Context;
+use ir::ir_gen::Visistor;
+use lex::lexer::Token;
 use logos::Logos;
-use ple::ir::ir_gen::Visistor;
-use ple::lex::lexer::Token;
-use ple::parse::parser::parser;
+use parse::parser::parser;
 use std::env;
 
-use crate::ple::ir::ir_gen::IRCodegen;
+use crate::ir::ir_gen::IRCodegen;
 
 fn main() {
     //reads the input expression from the command line
