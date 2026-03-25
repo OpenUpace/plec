@@ -2,18 +2,18 @@ use crate::parse::parser::Expr;
 use inkwell::{builder::Builder, context::Context, module::Module, values::BasicValueEnum};
 
 /// Visitor: Simple trait to impl.
-pub trait Visistor<'ctx> {
+pub trait IRGeneratorVisistor<'ctx> {
     fn visit_expr(&mut self, expr: &Expr) -> BasicValueEnum<'ctx>;
 }
 
 /// LLVM IR Codegen.
-pub struct IRCodegen<'ctx> {
+pub struct IRGenerator<'ctx> {
     pub context: &'ctx Context,
     pub builder: Builder<'ctx>,
     pub module: Module<'ctx>,
 }
 
-impl<'ctx> IRCodegen<'ctx> {
+impl<'ctx> IRGenerator<'ctx> {
     pub fn new(context: &'ctx Context, module_name: &str) -> Self {
         let module = context.create_module(module_name);
         let builder = context.create_builder();
@@ -26,7 +26,7 @@ impl<'ctx> IRCodegen<'ctx> {
     }
 }
 
-impl<'ctx> Visistor<'ctx> for IRCodegen<'ctx> {
+impl<'ctx> IRGeneratorVisistor<'ctx> for IRGenerator<'ctx> {
     fn visit_expr(&mut self, expr: &Expr) -> BasicValueEnum<'ctx> {
         match expr {
             Expr::Int(n) => self.context.i64_type().const_int(*n as u64, false).into(),

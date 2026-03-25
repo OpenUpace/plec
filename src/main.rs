@@ -40,7 +40,7 @@ fn main() {
     // Hack: Not encapsulated.
     let context = Context::create();
 
-    let mut codegen = IRCodegen::new(&context, "main");
+    let mut codegen = IRGenerator::new(&context, "main");
 
     let i64_type = context.i64_type();
     let fn_type = i64_type.fn_type(&[], false);
