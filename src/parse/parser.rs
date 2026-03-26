@@ -3,6 +3,7 @@ use chumsky::prelude::*;
 
 #[derive(Debug)]
 pub enum Expr {
+    Float(f64),
     // Integer literal.
     Int(isize),
 
@@ -29,7 +30,9 @@ pub fn parser<'src>()
                 Token::Integer(n) => Expr::Int(n),
             };
 
-            parenthesized.or(integer)
+            let float_ty = select! {Token::Float(n) => Expr::Float(n)};
+
+            parenthesized.or(integer).or(float_ty)
         };
 
         let unary = just(Token::Minus)
