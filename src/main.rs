@@ -53,4 +53,12 @@ fn main() {
     let _ = codegen.builder.build_return(Some(&result));
 
     codegen.module.print_to_stderr();
+
+    // Test
+    let t1 = Type::Int;
+    let t2 = Type::Float;
+    let _res = match check_ty(t1, t2) {
+        Ok(ty) => println!("Success! Type: {:?}", ty),
+        Err(e) => println!("error: {:?}", e),
+    };
 }
