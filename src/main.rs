@@ -38,6 +38,9 @@ fn main() {
     };
 
     // Hack: Not encapsulated.
+    let mut sema = SemanticAnalysis::new();
+    let res = sema.visit_expr(&ast);
+
     let context = Context::create();
 
     let mut codegen = IRGenerator::new(&context, "main");
@@ -48,17 +51,11 @@ fn main() {
     let entry = context.append_basic_block(main_fn, "entry");
     codegen.builder.position_at_end(entry);
 
-    let result = codegen.visit_expr(&ast);
+    let result = codegen.visit_expr(&res);
 
     let _ = codegen.builder.build_return(Some(&result));
 
     codegen.module.print_to_stderr();
 
     // Test
-    let t1 = Type::Int;
-    let t2 = Type::Float;
-    let _res = match check_ty(t1, t2) {
-        Ok(ty) => println!("Success! Type: {:?}", ty),
-        Err(e) => println!("error: {:?}", e),
-    };
 }

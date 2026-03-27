@@ -11,8 +11,16 @@ pub enum TypeError {
     InvalidType { lhs: Type, rhs: Type },
 }
 
-//TODO: Use it in Sema.
+#[derive(Debug, Clone)]
 pub enum TypedExpr {
+    Int {
+        value: isize,
+        ty: Type,
+    },
+    Float {
+        value: f64,
+        ty: Type,
+    },
     BinOp {
         lhs: Box<TypedExpr>,
         op: char,

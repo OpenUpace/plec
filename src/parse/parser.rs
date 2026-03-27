@@ -1,7 +1,7 @@
 use crate::lex::lexer::Token;
 use chumsky::prelude::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Expr {
     Float(f64),
     // Integer literal.
