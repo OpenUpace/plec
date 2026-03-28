@@ -1,10 +1,18 @@
 use rustyline::error::ReadlineError;
 use rustyline::{DefaultEditor, Result};
+use std::path::Path;
 
 use crate::prelude::{analysis::*, ir_gen::*, lexer::*, parser::*};
 use chumsky::Parser;
 use inkwell::context::Context;
+use inkwell::targets::{FileType, Target, TargetMachine};
 use logos::Logos;
+
+pub enum CompileStates {
+    Normal,
+    Debug,
+    Assmebly,
+}
 
 pub fn repl() -> Result<()> {
     // `()` can be used when no completer is required
@@ -17,7 +25,7 @@ pub fn repl() -> Result<()> {
         match readline {
             Ok(line) => {
                 rl.add_history_entry(line.as_str())?;
-                run(line);
+                run(line, CompileStates::Debug);
             }
             Err(ReadlineError::Interrupted) => {
                 println!("CTRL-C");
@@ -37,7 +45,7 @@ pub fn repl() -> Result<()> {
     Ok(())
 }
 
-fn run(input: String) {
+pub fn run(input: String, state: CompileStates) {
     //reads the input expression from the repl.
     let input = input;
 
@@ -90,5 +98,28 @@ fn run(input: String) {
 
     let _ = codegen.builder.build_return(Some(&result));
 
-    codegen.module.print_to_stderr();
+    Target::initialize_native(&Default::default()).expect("Cannot initialize target.");
+
+    let target_triple = TargetMachine::get_default_triple();
+
+    let target = Target::from_triple(&target_triple).unwrap();
+
+    let target_machine = target
+        .create_target_machine(
+            &target_triple,
+            "generic",
+            "",
+            inkwell::OptimizationLevel::Default,
+            inkwell::targets::RelocMode::Default,
+            inkwell::targets::CodeModel::Default,
+        )
+        .unwrap();
+
+    let _ = match state {
+        CompileStates::Normal => return,
+        CompileStates::Debug => codegen.module.print_to_stderr(),
+        CompileStates::Assmebly => target_machine
+            .write_to_file(&codegen.module, FileType::Assembly, Path::new("output.s"))
+            .unwrap(),
+    };
 }
