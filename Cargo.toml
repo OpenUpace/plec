@@ -8,4 +8,5 @@ license = "Apache-2.0"
 chumsky = "0.12.0"
 inkwell = { version = "0.8.0", features = ["llvm21-1"]}
 logos = "0.16.1"
+rustyline = { version = "17.0.2", features = ["with-file-history"]}
 thiserror = "2.0.18"
