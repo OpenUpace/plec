@@ -1,4 +1,4 @@
-use crate::prelude::{Type, TypedExpr};
+use crate::prelude::type_def::{Type, TypedExpr};
 use inkwell::{
     builder::Builder,
     context::Context,

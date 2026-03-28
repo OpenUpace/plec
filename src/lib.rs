@@ -5,9 +5,9 @@ pub mod parse;
 pub mod sema;
 
 pub mod prelude {
-    pub use crate::basic::type_def::*;
-    pub use crate::ir::ir_gen::*;
-    pub use crate::lex::lexer::*;
-    pub use crate::parse::parser::*;
-    pub use crate::sema::analysis::*;
+    pub use crate::basic::*;
+    pub use crate::ir::*;
+    pub use crate::lex::*;
+    pub use crate::parse::*;
+    pub use crate::sema::*;
 }

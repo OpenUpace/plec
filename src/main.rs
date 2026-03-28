@@ -1,7 +1,7 @@
 use chumsky::Parser;
 use inkwell::context::Context;
 use logos::Logos;
-use plec::prelude::*;
+use plec::prelude::{analysis::*, ir_gen::*, lexer::*, parser::*};
 use std::env;
 
 fn main() {
@@ -39,7 +39,12 @@ fn main() {
 
     // Hack: Not encapsulated.
     let mut sema = SemanticAnalysis::new();
-    let res = sema.visit_expr(&ast);
+    let res = match sema.visit_expr(&ast) {
+        Some(val) => val,
+        None => {
+            return;
+        }
+    };
 
     let context = Context::create();
 
@@ -56,6 +61,4 @@ fn main() {
     let _ = codegen.builder.build_return(Some(&result));
 
     codegen.module.print_to_stderr();
-
-    // Test
 }
