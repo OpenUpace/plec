@@ -1,3 +1,5 @@
+![license](https://img.shields.io/badge/License-Apache_2.0+-green)
+
 Welcome to ple! This is a small programming language.
 
 > **Warning!!!**
@@ -9,7 +11,7 @@ You should install `rustc`, `cargo`, and `git` then:
 ```bash
 $ git clone https://github.com/OpenUpace/plec.git
 $ cd plec
-$ cargo build && cargo run -- '42+1'
+$ cargo build && cargo run # repl, then input code.
 ```
 > Note: plec doesn't have test now, so only in `cargo run` works :-(
 
@@ -17,6 +19,19 @@ $ cargo build && cargo run -- '42+1'
 - A simple calculator DSL now.
 - Compiles to LLVM IR(using Inkwell).
 - Supports unsigned divison and modulo operators.
+- Supports two types: int, float.(but they are not keyword now!).
+- Has the REPL(but have some bugs and hacks yet).
+
+### REPL
+Since the plec v0.1.1, the plec has a sample REPL to put the LLVM IR in terminal. You can:
+```
+$ cargo run
+>> 1+1
+...
+>> 1.0+1
+...
+```
+to test the code.
 
 ## Bugs
 - Module is not clear.
@@ -29,4 +44,4 @@ $ cargo build && cargo run -- '42+1'
 We thank you for contributing our code. Please see the CONTRIBUTING.md before the real contributing.
 
 ## License
-To better contribute, we use the Apache License 2.0.
+Plec uses the Apache License 2.0 to pubilc.
