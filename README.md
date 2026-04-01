@@ -23,7 +23,7 @@ $ cargo build && cargo run # repl, then input code.
 - Has the REPL(but have some bugs and hacks yet).
 
 ### REPL
-Since the plec v0.1.1, the plec has a sample REPL to put the LLVM IR in terminal. You can:
+The plec has a sample REPL to put the LLVM IR in terminal since the 0.1.1 version,. You can:
 ```
 $ cargo run
 >> 1+1
