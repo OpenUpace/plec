@@ -3,6 +3,15 @@ use chumsky::prelude::*;
 
 #[derive(Debug, Clone)]
 pub enum Expr {
+    // Variable.
+    Var(String),
+
+    // Lambda: e.g. fun x -> x + 1
+    Lambda(String, Box<Expr>),
+
+    // Function Apply: e.g. f x
+    Apply(Box<Expr>, Box<Expr>),
+
     Float(f64),
     // Integer literal.
     Int(isize),
@@ -32,12 +41,24 @@ pub fn parser<'src>()
 
             let float_ty = select! {Token::Float(n) => Expr::Float(n)};
 
-            parenthesized.or(integer).or(float_ty)
+            let ident = select! {Token::Ident(s) => Expr::Var(s)};
+
+            parenthesized.or(integer).or(float_ty).or(ident)
         };
+
+        let ident = select! {Token::Ident(s) => s};
+
+        let lambda = just(Token::Lambda)
+            .ignore_then(ident.clone())
+            .then_ignore(just(Token::Arrow))
+            .then(p.clone())
+            .map(|(param, body)| Expr::Lambda(param, Box::new(body)));
+
+        let atom_expr = choice((atom, lambda));
 
         let unary = just(Token::Minus)
             .repeated()
-            .foldr(atom, |_op, _rhs| Expr::Neg(()));
+            .foldr(atom_expr, |_op, _rhs| Expr::Neg(()));
 
         let binary_1 = unary.clone().foldl(
             just(Token::Multiply)
