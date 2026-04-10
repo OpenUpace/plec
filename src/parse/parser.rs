@@ -7,10 +7,10 @@ pub enum Expr {
     Var(String),
 
     // Lambda: e.g. fun x -> x + 1
-    Lambda(String, Box<Expr>),
+    Lambda { params: String, body: Box<Expr> },
 
     // Function Apply: e.g. f x
-    Apply(Box<Expr>, Box<Expr>),
+    Apply { func: Box<Expr>, arg: Box<Expr> },
 
     Float(f64),
     // Integer literal.
@@ -52,7 +52,10 @@ pub fn parser<'src>()
             .ignore_then(ident.clone())
             .then_ignore(just(Token::Arrow))
             .then(p.clone())
-            .map(|(param, body)| Expr::Lambda(param, Box::new(body)));
+            .map(|(param, body)| Expr::Lambda {
+                params: param,
+                body: Box::new(body),
+            });
 
         let atom_expr = choice((atom, lambda));
 
