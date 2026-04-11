@@ -115,8 +115,8 @@ pub fn run(input: String, state: CompileStates) {
         )
         .unwrap();
 
-    let _ = match state {
-        CompileStates::Normal => return,
+    match state {
+        CompileStates::Normal => (),
         CompileStates::Debug => codegen.module.print_to_stderr(),
         CompileStates::Assmebly => target_machine
             .write_to_file(&codegen.module, FileType::Assembly, Path::new("output.s"))

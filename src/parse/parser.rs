@@ -2,21 +2,40 @@ use crate::lex::lexer::Token;
 use chumsky::prelude::*;
 
 #[derive(Debug, Clone)]
+pub enum BinaryOp {
+    Add,
+    Sub,
+    Mul,
+    Div,
+    Mod,
+}
+
+#[derive(Debug, Clone)]
 pub enum Expr {
     // Variable.
     Var(String),
 
     // Lambda: e.g. fun x -> x + 1
-    Lambda { params: String, body: Box<Expr> },
+    Lambda {
+        params: String,
+        body: Box<Expr>,
+    },
 
     // Function Apply: e.g. f x
-    Apply { func: Box<Expr>, arg: Box<Expr> },
+    Apply {
+        func: Box<Expr>,
+        arg: Box<Expr>,
+    },
 
     Float(f64),
     // Integer literal.
     Int(isize),
 
-    BinOp(Box<Expr>, char, Box<Expr>),
+    BinOp {
+        lhs: Box<Expr>,
+        op: BinaryOp,
+        rhs: Box<Expr>,
+    },
 
     // Unary minus.
     // Note: Don't use it now.
@@ -49,7 +68,7 @@ pub fn parser<'src>()
         let ident = select! {Token::Ident(s) => s};
 
         let lambda = just(Token::Lambda)
-            .ignore_then(ident.clone())
+            .ignore_then(ident)
             .then_ignore(just(Token::Arrow))
             .then(p.clone())
             .map(|(param, body)| Expr::Lambda {
@@ -70,9 +89,21 @@ pub fn parser<'src>()
                 .then(unary)
                 .repeated(),
             |lhs, (op, rhs)| match op {
-                Token::Multiply => Expr::BinOp(Box::new(lhs), '*', Box::new(rhs)),
-                Token::Divide => Expr::BinOp(Box::new(lhs), '/', Box::new(rhs)),
-                Token::Modulo => Expr::BinOp(Box::new(lhs), '%', Box::new(rhs)),
+                Token::Multiply => Expr::BinOp {
+                    lhs: Box::new(lhs),
+                    op: BinaryOp::Mul,
+                    rhs: Box::new(rhs),
+                },
+                Token::Divide => Expr::BinOp {
+                    lhs: Box::new(lhs),
+                    op: BinaryOp::Div,
+                    rhs: Box::new(rhs),
+                },
+                Token::Modulo => Expr::BinOp {
+                    lhs: Box::new(lhs),
+                    op: BinaryOp::Mod,
+                    rhs: Box::new(rhs),
+                },
                 _ => unreachable!(),
             },
         );
@@ -83,8 +114,16 @@ pub fn parser<'src>()
                 .then(binary_1)
                 .repeated(),
             |lhs, (op, rhs)| match op {
-                Token::Plus => Expr::BinOp(Box::new(lhs), '+', Box::new(rhs)),
-                Token::Minus => Expr::BinOp(Box::new(lhs), '-', Box::new(rhs)),
+                Token::Plus => Expr::BinOp {
+                    lhs: Box::new(lhs),
+                    op: BinaryOp::Add,
+                    rhs: Box::new(rhs),
+                },
+                Token::Minus => Expr::BinOp {
+                    lhs: Box::new(lhs),
+                    op: BinaryOp::Sub,
+                    rhs: Box::new(rhs),
+                },
                 _ => unreachable!(),
             },
         );

@@ -1,4 +1,7 @@
-use crate::prelude::type_def::{Type, TypedExpr};
+use crate::{
+    prelude::parser::BinaryOp,
+    prelude::type_def::{Type, TypedExpr},
+};
 use inkwell::{
     builder::Builder,
     context::Context,
@@ -66,12 +69,11 @@ impl<'ctx> IRGeneratorVisistor<'ctx> for IRGenerator<'ctx> {
                         let l = lhs_val.into_int_value();
                         let r = rhs_val.into_int_value();
                         let result = match op {
-                            '+' => self.builder.build_int_add(l, r, "addtmp"),
-                            '-' => self.builder.build_int_sub(l, r, "subtmp"),
-                            '*' => self.builder.build_int_mul(l, r, "multmp"),
-                            '/' => self.builder.build_int_unsigned_div(l, r, "divtmp"),
-                            '%' => self.builder.build_int_unsigned_rem(l, r, "modtmp"),
-                            _ => todo!(),
+                            BinaryOp::Add => self.builder.build_int_add(l, r, "addtmp"),
+                            BinaryOp::Sub => self.builder.build_int_sub(l, r, "subtmp"),
+                            BinaryOp::Mul => self.builder.build_int_mul(l, r, "multmp"),
+                            BinaryOp::Div => self.builder.build_int_unsigned_div(l, r, "divtmp"),
+                            BinaryOp::Mod => self.builder.build_int_unsigned_rem(l, r, "modtmp"),
                         };
                         // TODO: Use safe code to refactor.
                         return BasicValueEnum::IntValue(result.unwrap());
@@ -80,12 +82,11 @@ impl<'ctx> IRGeneratorVisistor<'ctx> for IRGenerator<'ctx> {
                         let l = self.to_float_value(lhs_val);
                         let r = self.to_float_value(rhs_val);
                         let result = match op {
-                            '+' => self.builder.build_float_add(l, r, "addtmp"),
-                            '-' => self.builder.build_float_sub(l, r, "subtmp"),
-                            '*' => self.builder.build_float_mul(l, r, "multmp"),
-                            '/' => self.builder.build_float_div(l, r, "divtmp"),
-                            '%' => self.builder.build_float_rem(l, r, "modtmp"),
-                            _ => todo!(),
+                            BinaryOp::Add => self.builder.build_float_add(l, r, "addtmp"),
+                            BinaryOp::Sub => self.builder.build_float_sub(l, r, "subtmp"),
+                            BinaryOp::Mul => self.builder.build_float_mul(l, r, "multmp"),
+                            BinaryOp::Div => self.builder.build_float_div(l, r, "divtmp"),
+                            BinaryOp::Mod => self.builder.build_float_rem(l, r, "modtmp"),
                         };
                         return BasicValueEnum::FloatValue(result.unwrap());
                     }

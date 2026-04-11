@@ -1,3 +1,5 @@
+use crate::prelude::parser::BinaryOp;
+
 #[derive(Debug, Clone)]
 pub enum Type {
     Int,
@@ -23,7 +25,7 @@ pub enum TypedExpr {
     },
     BinOp {
         lhs: Box<TypedExpr>,
-        op: char,
+        op: BinaryOp,
         rhs: Box<TypedExpr>,
         ty: Type,
     },

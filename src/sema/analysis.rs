@@ -22,7 +22,7 @@ impl SemanticAnalysis {
         }
     }
     /// Simple Typed Checker Function.
-    pub fn check_ty(&mut self, left: Type, right: Type) -> Result<Type, TypeError> {
+    pub fn check_ty(&self, left: Type, right: Type) -> Result<Type, TypeError> {
         match (left.clone(), right.clone()) {
             (Type::Int, Type::Int) => Ok(Type::Int),
             (Type::Float, Type::Float) | (Type::Float, Type::Int) | (Type::Int, Type::Float) => {
@@ -55,7 +55,7 @@ impl SemaVisitor for SemanticAnalysis {
                 value: n,
                 ty: Type::Float,
             }),
-            Expr::BinOp(lhs, op, rhs) => {
+            Expr::BinOp { lhs, op, rhs } => {
                 let lhs_val = self.visit_expr(&lhs)?;
                 let rhs_val = self.visit_expr(&rhs)?;
 
