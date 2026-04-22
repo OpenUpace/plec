@@ -1,0 +1,4 @@
+(library
+ (name plec)
+ (libraries types)
+ (wrapped true))
