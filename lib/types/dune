@@ -1,3 +1,4 @@
 (library
  (name types)
+ (public_name plec.types)
  (wrapped false))

@@ -2,26 +2,17 @@ open Plec
 open Types
 open Semantics
 open Eval
+open Error
 
 (* For Debug *)
-let rec string_of_ty = function
-  | Bool -> "Bool"
-  | Arrow (t1, t2) -> "(" ^ string_of_ty t1 ^ " -> " ^ string_of_ty t2 ^ ")"
-
 let rec string_of_term = function
   | Var x -> x
-  | Lam (fn, ty, arg) ->
-      "<fun> " ^ fn ^ string_of_ty ty  ^ string_of_term arg
+  | Lam (fn, ty, arg) -> "<fun> " ^ fn ^ string_of_ty ty ^ string_of_term arg
   | App (fn, arg) -> "<abs> " ^ string_of_term fn ^ string_of_term arg
   | BoolLit b -> string_of_bool b
   | If (cond, when_true, when_false) ->
       "<if> " ^ string_of_term cond ^ "<then> " ^ string_of_term when_true
       ^ "<else> " ^ string_of_term when_false
-
-let rec string_of_type_error = function
-  | Unbound_variable str -> "unbound variable: " ^ str
-  | Not_a_function ty -> "trying to apply a non-function value of type " ^ string_of_ty ty
-  | Mismatch { expected; found } -> "expected " ^ string_of_ty expected ^ " found " ^ string_of_ty found
 
 let test term =
   try
@@ -29,8 +20,8 @@ let test term =
     print_endline ("Result " ^ string_of_term v);
 
     match type_of StringMap.empty term with
-    | Ok ty -> print_endline ("Type: " ^ string_of_ty ty);
-    | Error err -> print_endline ("Type error: " ^ string_of_type_error err);
+    | Ok ty -> print_endline ("Type: " ^ string_of_ty ty)
+    | Error err -> print_endline ("Type error: " ^ string_of_type_error err)
   with e -> print_endline ("Error: " ^ Printexc.to_string e)
 
 (* main *)
@@ -40,5 +31,4 @@ let identity_bool = Lam ("x", Bool, Var "x")
 let sample_program =
   If (BoolLit true, App (identity_bool, BoolLit true), BoolLit false)
 
-let () =
-  test sample_program
+let () = test sample_program

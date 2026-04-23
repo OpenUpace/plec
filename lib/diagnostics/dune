@@ -1,0 +1,4 @@
+(library
+ (name diagnostics)
+ (wrapped false)
+ (libraries plec.types))
