@@ -5,22 +5,22 @@
 (generate_opam_files true)
 
 (source
- (github username/reponame))
+ (github OpenUpace/plec))
 
-(authors "Author Name <author@example.com>")
+(authors "Ai-Upace <jntmngmhahayo@outlook.com>")
 
-(maintainers "Maintainer Name <maintainer@example.com>")
+(maintainers "Ai-Upace <jntmngmhahayo@outlook.com>")
 
-(license LICENSE)
+(license Apache 2.0)
 
 (documentation https://url/to/documentation)
 
 (package
  (name plec)
- (synopsis "A short synopsis")
- (description "A longer description")
- (depends ocaml)
- (tags
-  ("add topics" "to describe" your project)))
+ (synopsis "ple compiler")
+ (description "A compiler")
+ (depends ocaml
+          dune
+          ))
 
 ; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html
