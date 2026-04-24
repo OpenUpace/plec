@@ -2,7 +2,10 @@ open Types
 open Semantics
 
 (* Dynamic semantics *)
-let is_value = function Lam _ | BoolLit _ -> true |  IntLit _ -> true | _ -> false
+let is_value = function
+  | Lam _ | BoolLit _ -> true
+  | IntLit _ -> true
+  | _ -> false
 
 let rec subst name replacement term =
   match term with
