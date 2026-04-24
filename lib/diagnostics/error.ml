@@ -2,6 +2,7 @@ open Types
 open Semantics
 
 let rec string_of_ty = function
+  | Int -> "Int"
   | Bool -> "Bool"
   | Arrow (t1, t2) -> "(" ^ string_of_ty t1 ^ " -> " ^ string_of_ty t2 ^ ")"
 

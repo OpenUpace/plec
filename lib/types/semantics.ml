@@ -26,6 +26,7 @@ let rec type_of (ctx : context) (term : term) : (ty, type_error) result =
           | Error err -> Error err)
       | Ok ty -> Error (Not_a_function ty))
   | BoolLit _ -> Ok Bool
+  | IntLit _ -> Ok Int
   | If (cond, when_true, when_false) -> (
       match type_of ctx cond with
       | Error err -> Error err

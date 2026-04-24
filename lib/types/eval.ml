@@ -2,12 +2,12 @@ open Types
 open Semantics
 
 (* Dynamic semantics *)
-let is_value = function Lam _ | BoolLit _ -> true | _ -> false
+let is_value = function Lam _ | BoolLit _ -> true |  IntLit _ -> true | _ -> false
 
 let rec subst name replacement term =
   match term with
   | Var var when String.equal var name -> replacement
-  | Var _ | BoolLit _ -> term
+  | Var _ | BoolLit _ | IntLit _ -> term
   | Lam (param, param_ty, body) when String.equal param name ->
       Lam (param, param_ty, body)
   | Lam (param, param_ty, body) ->

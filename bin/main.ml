@@ -3,16 +3,7 @@ open Types
 open Semantics
 open Eval
 open Error
-
-(* For Debug *)
-let rec string_of_term = function
-  | Var x -> x
-  | Lam (fn, ty, arg) -> "<fun> " ^ fn ^ string_of_ty ty ^ string_of_term arg
-  | App (fn, arg) -> "<abs> " ^ string_of_term fn ^ string_of_term arg
-  | BoolLit b -> string_of_bool b
-  | If (cond, when_true, when_false) ->
-      "<if> " ^ string_of_term cond ^ "<then> " ^ string_of_term when_true
-      ^ "<else> " ^ string_of_term when_false
+open Debug
 
 let test term =
   try
@@ -31,4 +22,4 @@ let identity_bool = Lam ("x", Bool, Var "x")
 let sample_program =
   If (BoolLit true, App (identity_bool, BoolLit true), BoolLit false)
 
-let () = test sample_program
+let () = print_endline (string_of_term sample_program)
