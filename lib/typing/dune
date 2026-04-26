@@ -1,0 +1,4 @@
+(library
+ (name typing)
+ (public_name plec.typing)
+ (wrapped false))

@@ -1,4 +1,4 @@
 (library
  (name plec)
- (libraries types diagnostics)
+ (libraries typing diagnostics)
  (wrapped true))
