@@ -1,0 +1,11 @@
+(library
+ (name parse)
+ (public_name plec.parse)
+ (wrapped false)
+ (libraries plec.typing sedlex menhirLib)
+ (preprocess
+  (pps sedlex.ppx)))
+
+(menhir
+ (modules parser)
+ (flags --table))

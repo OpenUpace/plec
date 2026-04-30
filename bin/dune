@@ -1,4 +1,6 @@
 (executable
  (public_name plec)
  (name main)
- (libraries plec))
+ (libraries plec sedlex)
+ (preprocess
+  (pps sedlex.ppx)))

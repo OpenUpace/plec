@@ -11,16 +11,20 @@
 
 (maintainers "Ai-Upace <jntmngmhahayo@outlook.com>")
 
-(license Apache 2.0)
+(license Apache-2.0)
 
 (documentation https://url/to/documentation)
 
+(using menhir 3.0)
+
 (package
  (name plec)
- (synopsis "ple compiler")
+ (synopsis "Ple compiler")
  (description "A compiler")
  (depends ocaml
           dune
+          sedlex
+          menhirLib
+          ppxlib
+          (ppx_expect :with-test)
           ))
-
-; See the complete stanza docs at https://dune.readthedocs.io/en/stable/reference/dune-project/index.html

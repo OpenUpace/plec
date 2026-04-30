@@ -22,9 +22,10 @@ open Debug
 
 (* main *)
 (* Small sample *)
-let identity_bool = Lam ("x", Bool, Var "x")
+let () =
+  let input = "fun x: int. x" in
 
-let sample_program =
-  If (BoolLit true, App (identity_bool, BoolLit true), BoolLit false)
-
-let () = print_endline (string_of_term sample_program)
+  let buf = Sedlexing.Utf8.from_string input in
+  let tokenize, lexbuf = Lexer.tokenize buf in
+  let result = Parser.term tokenize lexbuf in
+  print_endline (string_of_term result)
