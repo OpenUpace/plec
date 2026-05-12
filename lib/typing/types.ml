@@ -26,5 +26,6 @@ type term =
   | BoolLit of bool
   | IntLit of int
   | If of term * term * term
+  | Let of string * term * term
 
 type context = ty StringMap.t

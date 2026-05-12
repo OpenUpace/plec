@@ -5,15 +5,18 @@ let id = [%sedlex.regexp? alpha | Star (alpha | digit | '_')]
 let rec token buf =
   match%sedlex buf with
   | Plus digit -> Parser.TINT (int_of_string (Sedlexing.Utf8.lexeme buf))
-  | "fun" -> Parser.LAMBDA
+  | '\\' -> Parser.LAMBDA
   | "if" -> Parser.IF
   | "then" -> Parser.THEN
   | "else" -> Parser.ELSE
+  | "let" -> Parser.LET
+  | "in" -> Parser.IN
   | "true" -> Parser.TRUE
   | "false" -> Parser.FALSE
   | "int" -> Parser.INT
   | "bool" -> Parser.BOOL
   | "->" -> Parser.ARROW
+  | '=' -> Parser.EQ
   | '(' -> Parser.LPAREN
   | ')' -> Parser.RPAREN
   | ':' -> Parser.COLON

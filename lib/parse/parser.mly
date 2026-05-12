@@ -6,8 +6,10 @@
 %token <string> ID
 %token LAMBDA
 %token IF THEN ELSE
+%token LET IN
 %token TRUE FALSE
 %token INT BOOL ARROW
+%token EQ
 %token LPAREN RPAREN COLON DOT
 %token EOF
 
@@ -40,3 +42,4 @@ atom_expr:
   | FALSE { BoolLit false }
   | i = TINT { IntLit i }
   | IF; cond = expr; THEN; when_true = expr; ELSE; when_false = expr { If (cond, when_true, when_false) }
+  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }

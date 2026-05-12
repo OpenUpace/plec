@@ -29,6 +29,9 @@ let rec string_of_term = function
   | If (cond, when_true, when_false) ->
       " <if> " ^ string_of_term cond ^ " <then> " ^ string_of_term when_true
       ^ " <else> " ^ string_of_term when_false
+  | Let (bind_name, t1, t2) ->
+      " <let> " ^ bind_name ^ " = " ^ string_of_term t1 ^ " in "
+      ^ string_of_term t2
 
 let test term =
   try

@@ -37,6 +37,10 @@ let rec subst name replacement term =
         ( subst name replacement cond,
           subst name replacement when_true,
           subst name replacement when_false )
+  | Let (bind_name, t1, t2) when String.equal bind_name name ->
+      Let (name, subst name replacement t1, t2)
+  | Let (bind_name, t1, t2) ->
+      Let (bind_name, subst name replacement t1, subst name replacement t2)
 
 let rec eval = function
   | App (fn, arg) -> (
@@ -51,4 +55,7 @@ let rec eval = function
       | BoolLit true -> eval when_true
       | BoolLit false -> eval when_false
       | cond' -> If (cond', when_true, when_false))
+  | Let (bind_name, t1, t2) ->
+      let v1 = eval t1 in
+      eval (subst bind_name v1 t2)
   | term -> term

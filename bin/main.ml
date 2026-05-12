@@ -23,7 +23,7 @@ open Debug
 (* main *)
 (* Small sample *)
 let () =
-  let input = "if true then 1 else false" in
+  let input = "let x = true in x" in
 
   let buf = Sedlexing.Utf8.from_string input in
   let tokenize, lexbuf = Lexer.tokenize buf in
