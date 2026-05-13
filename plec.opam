@@ -15,6 +15,7 @@ depends: [
   "menhirLib"
   "ppxlib"
   "ppx_expect" {with-test}
+  "alcotest"
   "odoc" {with-doc}
 ]
 build: [

@@ -27,4 +27,5 @@
           menhirLib
           ppxlib
           (ppx_expect :with-test)
+          alcotest
           ))
