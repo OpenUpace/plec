@@ -11,7 +11,7 @@ You should install `git` and `opam` then:
 ```bash
 $ git clone https://github.com/OpenUpace/plec.git
 $ cd plec
-$ opam install . --with-test --with-doc --deps-only -y
+$ opam install . --with-test --deps-only -y
 $ dune exec plec
 ```
 
