@@ -53,11 +53,11 @@ let rec type_of (ctx : context) (term : term) : (ty, type_error) result =
               Error (Mismatch { expected = left_ty; found = right_ty })
           | Error err, _ | _, Error err -> Error err)
       | Ok cond_ty -> Error (Mismatch { expected = Bool; found = cond_ty }))
-  | Let (name, t1, t2) -> (
+  | Let (bind_name, t1, t2) -> (
       match type_of ctx t1 with
       | Error err -> Error err
       | Ok ty1 -> (
-          let ctx' = StringMap.add name ty1 ctx in
+          let ctx' = StringMap.add bind_name ty1 ctx in
           match type_of ctx' t2 with
           | Ok ty2 when ty1 = ty2 -> Ok ty2
           | Ok ty2 -> Error (Mismatch { expected = ty2; found = ty1 })
