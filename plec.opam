@@ -12,7 +12,7 @@ depends: [
   "ocaml"
   "dune" {>= "3.22"}
   "sedlex"
-  "menhirLib"
+  "menhir"
   "ppxlib"
   "ppx_expect" {with-test}
   "alcotest"
