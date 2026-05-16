@@ -25,4 +25,4 @@ $ dune exec plec
 We thank you for contributing our code. Please see the CONTRIBUTING.md before the real contributing.
 
 ## License
-Plec uses the Apache License 2.0 to pubilc.
+Plec uses the Apache License 2.0 to go pubilc.
