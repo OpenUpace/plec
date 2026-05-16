@@ -24,7 +24,7 @@
  (depends ocaml
           dune
           sedlex
-          menhirLib
+          menhir
           ppxlib
           (ppx_expect :with-test)
           alcotest
