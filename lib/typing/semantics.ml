@@ -15,50 +15,93 @@
 *)
 
 open Types
+open Infer
 
 (* Static semantics *)
-type type_error =
-  | Unbound_variable of string
-  | Not_a_function of ty
-  | Mismatch of { expected : ty; found : ty }
+(* type environment *)
+type env = (varname * typ) list
 
-let rec type_of (ctx : context) (term : term) : (ty, type_error) result =
-  match term with
-  | Var name -> (
-      match StringMap.find_opt name ctx with
-      | Some ty -> Ok ty
-      | None -> Error (Unbound_variable name))
-  | Lam (param, param_ty, body) ->
-      let ctx' = StringMap.add param param_ty ctx in
-      Result.map (fun body_ty -> Arrow (param_ty, body_ty)) (type_of ctx' body)
-  | App (fn, arg) -> (
-      match type_of ctx fn with
-      | Error err -> Error err
-      | Ok (Arrow (param_ty, result_ty)) -> (
-          match type_of ctx arg with
-          | Ok arg_ty when param_ty = arg_ty -> Ok result_ty
-          | Ok arg_ty ->
-              Error (Mismatch { expected = param_ty; found = arg_ty })
-          | Error err -> Error err)
-      | Ok ty -> Error (Not_a_function ty))
-  | BoolLit _ -> Ok Bool
-  | IntLit _ -> Ok Int
-  | If (cond, when_true, when_false) -> (
-      match type_of ctx cond with
-      | Error err -> Error err
-      | Ok Bool -> (
-          match (type_of ctx when_true, type_of ctx when_false) with
-          | Ok left_ty, Ok right_ty when left_ty = right_ty -> Ok left_ty
-          | Ok left_ty, Ok right_ty ->
-              Error (Mismatch { expected = left_ty; found = right_ty })
-          | Error err, _ | _, Error err -> Error err)
-      | Ok cond_ty -> Error (Mismatch { expected = Bool; found = cond_ty }))
-  | Let (bind_name, t1, t2) -> (
-      match type_of ctx t1 with
-      | Error err -> Error err
-      | Ok ty1 -> (
-          let ctx' = StringMap.add bind_name ty1 ctx in
-          match type_of ctx' t2 with
-          | Ok ty2 when ty1 = ty2 -> Ok ty2
-          | Ok ty2 -> Error (Mismatch { expected = ty2; found = ty1 })
-          | Error err -> Error err))
+(* Sound generalization *)
+let force_delayed_adjustments () =
+  let rec loop acc level ty =
+    match repr ty with
+    | TVar ({ contents = Unbound (name, l) } as tvr) when l > level ->
+        tvr := Unbound (name, level);
+        acc
+    | TArrow (_, _, ls) when ls.level_new = marked_level ->
+        failwith "occurs check"
+    | TArrow (_, _, ls) as ty ->
+        if ls.level_new > level then ls.level_new <- level;
+        adjust_one acc ty
+    | _ -> acc
+  and adjust_one acc = function
+    | TArrow (_, _, ls) as ty when ls.level_old <= !current_level -> ty :: acc
+    | TArrow (_, _, ls) when ls.level_old = ls.level_new -> acc
+    | TArrow (ty1, ty2, ls) ->
+        let level = ls.level_new in
+        ls.level_new <- marked_level;
+        let acc = loop acc level ty1 in
+        let acc = loop acc level ty2 in
+        ls.level_new <- level;
+        ls.level_old <- level;
+        acc
+    | _ -> assert false
+  in
+  to_be_level_adjusted := List.fold_left adjust_one [] !to_be_level_adjusted
+
+let gen ty =
+  force_delayed_adjustments ();
+  let rec loop ty =
+    match repr ty with
+    | TVar ({ contents = Unbound (name, l) } as tvr) when l > !current_level ->
+        tvr := Unbound (name, generic_level)
+    | TArrow (ty1, ty2, ls) when ls.level_new > !current_level ->
+        let ty1 = repr ty1 and ty2 = repr ty2 in
+        loop ty1;
+        loop ty2;
+        let l = max (get_level ty1) (get_level ty2) in
+        ls.level_old <- l;
+        ls.level_new <- l
+    | _ -> ()
+  in
+  loop ty
+
+let inst ty =
+  let rec loop subst = function
+    | TVar { contents = Unbound (name, l) } when l = generic_level ->
+        begin match List.assoc_opt name subst with
+        | Some ty -> (ty, subst)
+        | None ->
+            let tv = newvar () in
+            (tv, (name, tv) :: subst)
+        end
+    | TVar { contents = Link ty } -> loop subst ty
+    | ty -> (ty, subst)
+  in
+  fst (loop [] ty)
+
+let rec type_of (env : env) = function
+  | Var x -> inst (List.assoc x env)
+  | Lam (x, e) ->
+      let ty_x = newvar () in
+      let ty_e = type_of ((x, ty_x) :: env) e in
+      new_arrow ty_x ty_e
+  | App (e1, e2) ->
+      let ty_fun = type_of env e1 in
+      let ty_arg = type_of env e2 in
+      let ty_res = newvar () in
+      unify ty_fun (new_arrow ty_arg ty_res);
+      ty_res
+  | Let (x, e, e2) ->
+      enter_level ();
+      let ty_e = type_of env e in
+      leave_level ();
+      gen ty_e;
+      type_of ((x, ty_e) :: env) e2
+
+(* Type-check the top-level expresstion*)
+let top_type_check exp =
+  reset_type_variables ();
+  let ty = type_of [] exp in
+  cycle_free ty;
+  ty

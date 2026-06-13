@@ -17,28 +17,11 @@
 open Types
 open Error
 open Semantics
-open Eval
 
 let rec string_of_term = function
   | Var x -> x
-  | Lam (fn, ty, arg) ->
-      " <fun> " ^ fn ^ " : " ^ string_of_ty ty ^ " -> " ^ string_of_term arg
-  | App (fn, arg) -> " <app> " ^ string_of_term fn ^ string_of_term arg
-  | BoolLit b -> string_of_bool b
-  | IntLit i -> string_of_int i
-  | If (cond, when_true, when_false) ->
-      " <if> " ^ string_of_term cond ^ " <then> " ^ string_of_term when_true
-      ^ " <else> " ^ string_of_term when_false
+  | Lam (fn, arg) -> " <fun> " ^ fn ^ ". " ^ string_of_term arg
+  | App (e1, e2) -> " <app> " ^ string_of_term e1 ^ string_of_term e2
   | Let (bind_name, t1, t2) ->
       " <let> " ^ bind_name ^ " = " ^ string_of_term t1 ^ " in "
       ^ string_of_term t2
-
-let test term =
-  try
-    match type_of StringMap.empty term with
-    | Ok ty ->
-        let r = eval term in
-        print_endline ("Result: " ^ string_of_term r);
-        print_endline ("Type: " ^ string_of_ty ty)
-    | Error err -> print_endline ("Error: " ^ string_of_type_error err)
-  with e -> print_endline ("Error: " ^ Printexc.to_string e)

@@ -14,18 +14,67 @@
    limitations under the License.
 *)
 
-module StringMap = Map.Make (String)
+type varname = string
+type level = int
+
+let generic_level = 100000000
+let marked_level = -1
+let current_level = ref 1
+let enter_level () = incr current_level
+let leave_level () = decr current_level
 
 (* AST *)
-type ty = Int | Bool | Arrow of ty * ty
+type exp =
+  | Var of varname
+  | App of exp * exp (* e1 e2 *)
+  | Lam of varname * exp (* fun x -> e *)
+  | Let of varname * exp * exp (* let x = e in e2 *)
 
-type term =
-  | Var of string
-  | Lam of string * ty * term
-  | App of term * term
-  | BoolLit of bool
-  | IntLit of int
-  | If of term * term * term
-  | Let of string * term * term
+type typ = TVar of tv ref | TArrow of typ * typ * levels | TInt | TBool
+and tv = Unbound of string * level | Link of typ
+and levels = { mutable level_old : level; mutable level_new : level }
 
-type context = ty StringMap.t
+let counter = ref 0
+let to_be_level_adjusted : typ list ref = ref []
+
+let reset_type_variables () =
+  counter := 0;
+  current_level := 1;
+  to_be_level_adjusted := []
+
+let gensym () : string =
+  let n = !counter in
+  incr counter;
+  if n < 26 then String.make 1 (Char.chr (Char.code 'a' + n))
+  else "t" ^ string_of_int n
+
+let newvar () : typ = TVar (ref (Unbound (gensym (), !current_level)))
+
+let new_arrow (ty1 : typ) (ty2 : typ) : typ =
+  TArrow (ty1, ty2, { level_new = !current_level; level_old = !current_level })
+
+let rec repr = function
+  | TVar ({ contents = Link ty } as tv) ->
+      let ty = repr ty in
+      tv := Link ty;
+      ty
+  | ty -> ty
+
+let get_level = function
+  | TVar { contents = Unbound (_, l) } -> l
+  | TArrow (_, _, ls) -> ls.level_new
+  | _ -> assert false
+
+let rec cycle_free = function
+  | TVar { contents = Unbound _ } -> ()
+  | TVar { contents = Link ty } -> cycle_free ty
+  | TArrow (_, _, ls) when ls.level_new = marked_level ->
+      failwith "occurs check"
+  | TArrow (t1, t2, ls) ->
+      let level = ls.level_new in
+      ls.level_new <- marked_level;
+      cycle_free t1;
+      cycle_free t2;
+      ls.level_new <- level
+  | _ -> ()
+(* For primitive types, they will not occur the case of recursive types *)

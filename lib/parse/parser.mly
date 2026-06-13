@@ -1,31 +1,22 @@
 %{
   open Types
+
+  let curry vars body =
+    List.fold_right (fun var body -> Lam(var, body)) vars body
 %}
 
-%token <int> TINT
 %token <string> ID
 %token LAMBDA
-%token IF THEN ELSE
 %token LET IN
-%token TRUE FALSE
-%token INT BOOL ARROW
 %token EQ
-%token LPAREN RPAREN COLON DOT
+%token LPAREN RPAREN SEMICOLON DOT
 %token EOF
 
-%start <Types.term> term
+%start <Types.exp> exp
 
 %%
-term:
+exp:
   | e = expr EOF { e }
-
-ty:
-  | t = atom_ty { t }
-  | t1 = atom_ty; ARROW; t2 = ty { Arrow (t1, t2) }
-
-atom_ty:
-  | INT { Int }
-  | BOOL { Bool }
 
 expr:
   | e = expr_apply { e }
@@ -34,12 +25,12 @@ expr_apply:
   | e = atom_expr { e }
   | e1 = expr_apply; e2 = atom_expr { App (e1, e2) }
 
+binders:
+  | x = ID { [x] }
+  | x1 = ID; x2 = binders { x1 :: x2 }
+
 atom_expr:
   | LPAREN; e = expr; RPAREN { e }
   | n = ID { Var n }
-  | LAMBDA; fn = ID; COLON; t = ty; DOT; body = expr { Lam (fn, t, body) }
-  | TRUE { BoolLit true }
-  | FALSE { BoolLit false }
-  | i = TINT { IntLit i }
-  | IF; cond = expr; THEN; when_true = expr; ELSE; when_false = expr { If (cond, when_true, when_false) }
-  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
+  | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
+  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr; SEMICOLON { Let (name, t1, t2) }

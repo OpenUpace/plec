@@ -16,16 +16,25 @@
 
 open Plec
 open Types
-open Eval
 open Error
 open Debug
+open Semantics
 
-(* main *)
+(* Main *)
+let usage_msg = "plec [--version] -c <input>"
+let anon_arg = ref []
+let input_texts = ref ""
+let anon_fun arg = anon_arg := arg :: !anon_arg
+let speclist = [ ("-c", Arg.Set_string input_texts, "input ple code") ]
+
 (* Small sample *)
-let () =
-  let input = "let x = true in x" in
-
-  let buf = Sedlexing.Utf8.from_string input in
+let main text =
+  let buf = Sedlexing.Utf8.from_string text in
   let tokenize, lexbuf = Lexer.tokenize buf in
-  let result = Parser.term tokenize lexbuf in
-  test result
+  let result = Parser.exp tokenize lexbuf in
+  print_endline (string_of_ty (top_type_check result))
+
+let () =
+  Arg.parse speclist anon_fun usage_msg;
+
+  main !input_texts
