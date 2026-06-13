@@ -17,15 +17,27 @@
 open Types
 open Semantics
 
-let rec string_of_ty = function
-  | Int -> "Int"
-  | Bool -> "Bool"
-  | Arrow (t1, t2) -> "(" ^ string_of_ty t1 ^ " -> " ^ string_of_ty t2 ^ ")"
+let pretty_name index =
+  if index < 26 then "'" ^ String.make 1 (Char.chr (Char.code 'a' + index))
+  else "'t" ^ string_of_int index
 
-let rec string_of_type_error = function
-  | Unbound_variable str -> "Unbound variable: " ^ str
-  | Not_a_function ty ->
-      "Trying to apply a non-function value of type " ^ string_of_ty ty
-  | Mismatch { expected; found } ->
-      "This expression was expected of type " ^ string_of_ty expected
-      ^ " but found " ^ string_of_ty found
+let rec string_of_ty ty =
+  let rec go prec names next ty =
+    match repr ty with
+    | TVar { contents = Unbound (name, _) } -> (
+        match List.assoc_opt name names with
+        | Some pretty -> (pretty, names, next)
+        | None ->
+            let pretty = pretty_name next in
+            (pretty, (name, pretty) :: names, next + 1))
+    | TArrow (left, right, _) ->
+        let left_text, names, next = go 1 names next left in
+        let right_text, names, next = go 0 names next right in
+        let body = left_text ^ " -> " ^ right_text in
+        let text = if prec > 0 then "(" ^ body ^ ")" else body in
+        (text, names, next)
+    | TVar { contents = Link _ } -> assert false
+    | _ -> assert false
+  in
+  let text, _, _ = go 0 [] 0 ty in
+  text
