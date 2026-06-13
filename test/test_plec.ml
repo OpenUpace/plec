@@ -24,7 +24,6 @@ let rec equal_ty ty1 ty2 =
   | _ -> false
 
 let ty_testable = testable pp_ty equal_ty
-
 let t1 = newvar ()
 let t2 = newvar ()
 
@@ -46,5 +45,11 @@ let test_3 () =
 
   check ty_testable "church false" (new_arrow t1 (new_arrow t2 t2)) f1'
 
-let type_tests = [ ("identity", `Quick, test_1); ("church true", `Quick, test_2); ("church false", `Quick, test_3) ]
+let type_tests =
+  [
+    ("identity", `Quick, test_1);
+    ("church true", `Quick, test_2);
+    ("church false", `Quick, test_3);
+  ]
+
 let () = run "Plec Test" [ ("type inference", type_tests) ]
