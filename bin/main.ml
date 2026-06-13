@@ -24,12 +24,8 @@ open Semantics
 let usage_msg = "plec [--version] -c <input>"
 let anon_arg = ref []
 let input_texts = ref ""
-
-let anon_fun arg =
-  anon_arg := arg :: !anon_arg
-
-let speclist =
-  [("-c", Arg.Set_string input_texts, "input ple code")]
+let anon_fun arg = anon_arg := arg :: !anon_arg
+let speclist = [ ("-c", Arg.Set_string input_texts, "input ple code") ]
 
 (* Small sample *)
 let main text =

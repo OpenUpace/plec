@@ -66,13 +66,15 @@ let get_level = function
   | _ -> assert false
 
 let rec cycle_free = function
-  | TVar {contents = Unbound _} -> ()
-  | TVar {contents = Link ty} -> cycle_free ty
-  | TArrow (_,_,ls) when ls.level_new = marked_level -> failwith "occurs check"
-  | TArrow (t1,t2,ls) ->
+  | TVar { contents = Unbound _ } -> ()
+  | TVar { contents = Link ty } -> cycle_free ty
+  | TArrow (_, _, ls) when ls.level_new = marked_level ->
+      failwith "occurs check"
+  | TArrow (t1, t2, ls) ->
       let level = ls.level_new in
       ls.level_new <- marked_level;
       cycle_free t1;
       cycle_free t2;
       ls.level_new <- level
-  | _ -> ()   (* For primitive types, they will not occur the case of recursive types *)
+  | _ -> ()
+(* For primitive types, they will not occur the case of recursive types *)

@@ -4,7 +4,7 @@ let id = [%sedlex.regexp? alpha | Star (alpha | digit | '_')]
 
 let rec token buf =
   match%sedlex buf with
-(*  | Plus digit -> Parser.TINT (int_of_string (Sedlexing.Utf8.lexeme buf)) *)
+  (*  | Plus digit -> Parser.TINT (int_of_string (Sedlexing.Utf8.lexeme buf)) *)
   | '\\' -> Parser.LAMBDA
   | "let" -> Parser.LET
   | "in" -> Parser.IN
