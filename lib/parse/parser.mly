@@ -5,11 +5,13 @@
     List.fold_right (fun var body -> Lam(var, body)) vars body
 %}
 
+%token <int> TINT
 %token <string> ID
 %token LAMBDA
 %token LET IN
 %token EQ
 %token LPAREN RPAREN SEMICOLON DOT
+%token TRUE FALSE
 %token EOF
 
 %start <Types.exp> exp
@@ -34,3 +36,6 @@ atom_expr:
   | n = ID { Var n }
   | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
   | LET; name = ID; EQ; t1 = expr; IN; t2 = expr; SEMICOLON { Let (name, t1, t2) }
+  | i = TINT { IntLit i }
+  | TRUE { BoolLit true }
+  | FALSE { BoolLit false }

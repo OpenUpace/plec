@@ -29,6 +29,8 @@ type exp =
   | App of exp * exp (* e1 e2 *)
   | Lam of varname * exp (* fun x -> e *)
   | Let of varname * exp * exp (* let x = e in e2 *)
+  | IntLit of int
+  | BoolLit of bool
 
 type typ = TVar of tv ref | TArrow of typ * typ * levels | TInt | TBool
 and tv = Unbound of string * level | Link of typ

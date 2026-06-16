@@ -54,7 +54,7 @@ let rec unify (t1 : typ) (t2 : typ) : unit =
         ll.level_new <- min_level;
         lr.level_new <- min_level
     | TInt, TInt | TBool, TBool -> ()
-    | _ -> ()
+    | _ -> failwith "cannot unify"
 
 and unify_lev l ty1 ty2 =
   let ty1 = repr ty1 in

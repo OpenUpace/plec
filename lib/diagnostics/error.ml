@@ -36,8 +36,15 @@ let rec string_of_ty ty =
         let body = left_text ^ " -> " ^ right_text in
         let text = if prec > 0 then "(" ^ body ^ ")" else body in
         (text, names, next)
+    | TInt ->
+        let text = "int" in
+        let text = if prec > 0 then "(" ^ text ^ ")" else text in
+        (text, names, next)
+    | TBool ->
+        let text = "bool" in
+        let text = if prec > 0 then "(" ^ text ^ ")" else text in
+        (text, names, next)
     | TVar { contents = Link _ } -> assert false
-    | _ -> assert false
   in
   let text, _, _ = go 0 [] 0 ty in
   text
