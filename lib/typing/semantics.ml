@@ -98,6 +98,8 @@ let rec type_of (env : env) = function
       leave_level ();
       gen ty_e;
       type_of ((x, ty_e) :: env) e2
+  | IntLit _ -> TInt
+  | BoolLit _ -> TBool
 
 (* Type-check the top-level expresstion*)
 let top_type_check exp =
