@@ -6,6 +6,9 @@ let rec token buf =
   match%sedlex buf with
   | Plus digit -> Parser.TINT (int_of_string (Sedlexing.Utf8.lexeme buf))
   | '\\' -> Parser.LAMBDA
+  | "if" -> Parser.IF
+  | "then" -> Parser.THEN
+  | "else" -> Parser.ELSE
   | "let" -> Parser.LET
   | "in" -> Parser.IN
   | "true" -> Parser.TRUE

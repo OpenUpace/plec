@@ -25,5 +25,8 @@ let rec string_of_term = function
   | Let (bind_name, t1, t2) ->
       " <let> " ^ bind_name ^ " = " ^ string_of_term t1 ^ " in "
       ^ string_of_term t2
+  | If (e1, e2, e3) ->
+      " <if> " ^ string_of_term e1 ^ " <then> " ^ string_of_term e2 ^ " <else> "
+      ^ string_of_term e3
   | IntLit n -> string_of_int n
   | BoolLit b -> string_of_bool b
