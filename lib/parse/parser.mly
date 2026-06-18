@@ -35,7 +35,7 @@ atom_expr:
   | LPAREN; e = expr; RPAREN { e }
   | n = ID { Var n }
   | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
-  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr; SEMICOLON { Let (name, t1, t2) }
+  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
   | i = TINT { IntLit i }
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
