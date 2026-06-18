@@ -76,9 +76,9 @@ let inst ty =
             (tv, (name, tv) :: subst)
         end
     | TVar { contents = Link ty } -> loop subst ty
-    | TArrow (ty1,ty2,ls) when ls.level_new = generic_level ->
-        let (ty1,subst) = loop subst ty1 in
-        let (ty2,subst) = loop subst ty2 in
+    | TArrow (ty1, ty2, ls) when ls.level_new = generic_level ->
+        let ty1, subst = loop subst ty1 in
+        let ty2, subst = loop subst ty2 in
         (new_arrow ty1 ty2, subst)
     | ty -> (ty, subst)
   in
