@@ -8,6 +8,7 @@
 %token <int> TINT
 %token <string> ID
 %token LAMBDA
+%token IF THEN ELSE
 %token LET IN
 %token EQ
 %token LPAREN RPAREN SEMICOLON DOT
@@ -39,3 +40,4 @@ atom_expr:
   | i = TINT { IntLit i }
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
+  | IF; e1 = expr; THEN; e2 = expr; ELSE; e3 = expr { If (e1, e2, e3) }

@@ -29,6 +29,7 @@ type exp =
   | App of exp * exp (* e1 e2 *)
   | Lam of varname * exp (* fun x -> e *)
   | Let of varname * exp * exp (* let x = e in e2 *)
+  | If of exp * exp * exp (* if e then e2 else e3 *)
   | IntLit of int
   | BoolLit of bool
 

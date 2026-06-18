@@ -102,6 +102,13 @@ let rec type_of (env : env) = function
       leave_level ();
       gen ty_e;
       type_of ((x, ty_e) :: env) e2
+  | If (e1, e2, e3) ->
+      let ty_e1 = type_of env e1 in
+      unify ty_e1 TBool;
+      let ty_e2 = type_of env e2 in
+      let ty_e3 = type_of env e3 in
+      unify ty_e2 ty_e3;
+      ty_e3
   | IntLit _ -> TInt
   | BoolLit _ -> TBool
 
