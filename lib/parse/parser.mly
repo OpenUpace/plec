@@ -9,11 +9,19 @@
 %token <string> ID
 %token LAMBDA
 %token IF THEN ELSE
-%token LET IN
+%token LET IN ASSIGN
 %token EQ
+%token PLUS MINUS TIMES LT GT AND OR
 %token LPAREN RPAREN SEMICOLON DOT
 %token TRUE FALSE
 %token EOF
+
+%left     OR
+%left     AND
+%left     EQ
+%nonassoc LT GT
+%left     PLUS MINUS
+%left     TIMES
 
 %start <Types.exp> exp
 
@@ -36,8 +44,18 @@ atom_expr:
   | LPAREN; e = expr; RPAREN { e }
   | n = ID { Var n }
   | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
-  | LET; name = ID; EQ; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
+  | LET; name = ID; ASSIGN; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
   | i = TINT { IntLit i }
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
   | IF; e1 = expr; THEN; e2 = expr; ELSE; e3 = expr { If (e1, e2, e3) }
+  (* hack *)
+  | expr EQ expr { BinOp ($1, Eq, $3)}
+  | expr AND expr { BinOp ($1, And, $3)}
+  | expr OR expr { BinOp ($1, Or, $3)}
+  | expr LT expr { BinOp ($1, Lt, $3)}
+  | expr GT expr { BinOp ($1, Gt, $3)}
+  | expr PLUS expr { BinOp ($1, Add, $3)}
+  | expr MINUS expr { BinOp ($1, Sub, $3)}
+  | expr TIMES expr { BinOp ($1, Mul, $3)}
+

@@ -111,6 +111,25 @@ let rec type_of (env : env) = function
       ty_e3
   | IntLit _ -> TInt
   | BoolLit _ -> TBool
+  | BinOp (e1, op, e2) -> (
+      let ty_e1 = type_of env e1 in
+      let ty_e2 = type_of env e2 in
+      match op with
+      | Add | Sub | Mul ->
+          unify ty_e1 TInt;
+          unify ty_e2 TInt;
+          TInt
+      | Lt | Gt ->
+          unify ty_e1 TInt;
+          unify ty_e2 TInt;
+          TBool
+      | Eq ->
+          unify ty_e1 ty_e2;
+          TBool
+      | And | Or ->
+          unify ty_e1 TBool;
+          unify ty_e2 TBool;
+          TBool)
 
 (* Type-check the top-level expresstion*)
 let top_type_check exp =

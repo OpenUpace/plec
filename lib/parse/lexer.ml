@@ -13,7 +13,15 @@ let rec token buf =
   | "in" -> Parser.IN
   | "true" -> Parser.TRUE
   | "false" -> Parser.FALSE
-  | '=' -> Parser.EQ
+  | '=' -> Parser.ASSIGN
+  | "==" -> Parser.EQ
+  | '+' -> Parser.PLUS
+  | '-' -> Parser.MINUS
+  | '*' -> Parser.TIMES
+  | '<' -> Parser.LT
+  | '>' -> Parser.GT
+  | "&&" -> Parser.AND
+  | "||" -> Parser.OR
   | '(' -> Parser.LPAREN
   | ')' -> Parser.RPAREN
   | ';' -> Parser.SEMICOLON

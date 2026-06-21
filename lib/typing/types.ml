@@ -24,6 +24,16 @@ let enter_level () = incr current_level
 let leave_level () = decr current_level
 
 (* AST *)
+type binop =
+  | Add
+  | Sub
+  | Mul (* int -> int -> int *)
+  | Lt
+  | Gt (* int -> int -> bool *)
+  | Eq (* 'a -> 'a -> bool *)
+  | And
+  | Or (* bool -> bool -> bool *)
+
 type exp =
   | Var of varname
   | App of exp * exp (* e1 e2 *)
@@ -32,6 +42,7 @@ type exp =
   | If of exp * exp * exp (* if e then e2 else e3 *)
   | IntLit of int
   | BoolLit of bool
+  | BinOp of exp * binop * exp
 
 type typ = TVar of tv ref | TArrow of typ * typ * levels | TInt | TBool
 and tv = Unbound of string * level | Link of typ

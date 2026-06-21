@@ -18,6 +18,16 @@ open Types
 open Error
 open Semantics
 
+let string_of_bin_op = function
+  | Add -> "+"
+  | Sub -> "-"
+  | Mul -> "*"
+  | Lt -> "<"
+  | Gt -> ">"
+  | Eq -> "=="
+  | And -> "&&"
+  | Or -> "||"
+
 let rec string_of_term = function
   | Var x -> x
   | Lam (fn, arg) -> " <fun> " ^ fn ^ ". " ^ string_of_term arg
@@ -30,3 +40,5 @@ let rec string_of_term = function
       ^ string_of_term e3
   | IntLit n -> string_of_int n
   | BoolLit b -> string_of_bool b
+  | BinOp (e1, op, e2) ->
+      string_of_term e1 ^ string_of_bin_op op ^ string_of_term e2
