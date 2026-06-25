@@ -3,6 +3,9 @@
 
   let curry vars body =
     List.fold_right (fun var body -> Lam(var, body)) vars body
+
+  let let_multiple_parameters xs e1 =
+    if xs = [] then e1 else curry xs e1
 %}
 
 %token <int> TINT
@@ -44,6 +47,7 @@ atom_expr:
   | n = ID { Var n }
   | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
   | LET; name = ID; ASSIGN; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
+  | LET; name = ID; xs = binders; ASSIGN; e1 = expr; IN; e2 = expr { Let (name, let_multiple_parameters xs e1, e2) }
   | i = TINT { IntLit i }
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
