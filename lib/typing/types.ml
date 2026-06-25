@@ -77,7 +77,7 @@ let rec repr = function
 let get_level = function
   | TVar { contents = Unbound (_, l) } -> l
   | TArrow (_, _, ls) -> ls.level_new
-  | _ -> assert false
+  | _ -> 0
 
 let rec cycle_free = function
   | TVar { contents = Unbound _ } -> ()

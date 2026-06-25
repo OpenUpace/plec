@@ -28,7 +28,7 @@ let update_level : level -> typ -> unit =
           to_be_level_adjusted := ty :: !to_be_level_adjusted;
         ls.level_new <- 1
       end
-  | _ -> assert false
+  | _ -> ()
 
 let rec unify (t1 : typ) (t2 : typ) : unit =
   if t1 == t2 then ()
