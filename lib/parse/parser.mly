@@ -18,8 +18,7 @@
 
 %left     OR
 %left     AND
-%left     EQ
-%nonassoc LT GT
+%nonassoc LT GT EQ
 %left     PLUS MINUS
 %left     TIMES
 
