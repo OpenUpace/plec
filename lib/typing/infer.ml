@@ -14,6 +14,7 @@
    limitations under the License.
 *)
 open Types
+open Error
 
 let update_level : level -> typ -> unit =
  fun l -> function
@@ -54,7 +55,9 @@ let rec unify (t1 : typ) (t2 : typ) : unit =
         ll.level_new <- min_level;
         lr.level_new <- min_level
     | TInt, TInt | TBool, TBool -> ()
-    | _ -> failwith "cannot unify"
+    | _ ->
+        Printf.eprintf "cannot unify type %s with type %s\n" (string_of_ty t1)
+          (string_of_ty t2)
 
 and unify_lev l ty1 ty2 =
   let ty1 = repr ty1 in
