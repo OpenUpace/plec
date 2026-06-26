@@ -15,7 +15,6 @@
 *)
 
 open Types
-open Semantics
 
 let pretty_name index =
   if index < 26 then "'" ^ String.make 1 (Char.chr (Char.code 'a' + index))

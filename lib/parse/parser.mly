@@ -6,6 +6,11 @@
 
   let let_multiple_parameters xs e1 =
     if xs = [] then e1 else curry xs e1
+
+  let apply_left e =
+    match e with
+    | [] -> assert false
+    | f :: args -> List.fold_left (fun hd tl -> App (hd, tl)) f args
 %}
 
 %token <int> TINT
@@ -35,8 +40,7 @@ expr:
   | e = expr_apply { e }
 
 expr_apply:
-  | e = atom_expr { e }
-  | e1 = expr_apply; e2 = atom_expr { App (e1, e2) }
+  | es = nonempty_list(atom_expr) { apply_left es }
 
 binders:
   | x = ID { [x] }
