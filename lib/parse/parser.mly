@@ -26,27 +26,35 @@
 
 %left     OR
 %left     AND
-%nonassoc LT GT EQ
+%left     EQ LT GT
 %left     PLUS MINUS
 %left     TIMES
 
 %start <Types.exp> exp
 
 %%
+
 exp:
   | e = expr EOF { e }
 
 expr:
-  | e = expr_apply { e }
+  | e = binop { e }
 
-expr_apply:
-  | es = nonempty_list(atom_expr) { apply_left es }
+binop:
+  | e1 = binop OR e2 = binop { BinOp (e1, Or, e2) }
+  | e1 = binop AND e2 = binop { BinOp (e1, And, e2) }
+  | e1 = binop EQ e2 = binop { BinOp (e1, Eq, e2) }
+  | e1 = binop LT e2 = binop { BinOp (e1, Lt, e2) }
+  | e1 = binop GT e2 = binop { BinOp (e1, Gt, e2) }
+  | e1 = binop PLUS e2 = binop { BinOp (e1, Add, e2) }
+  | e1 = binop MINUS e2 = binop { BinOp (e1, Sub, e2) }
+  | e1 = binop TIMES e2 = binop { BinOp (e1, Mul, e2) }
+  | e = apply_expr { e }
 
-binders:
-  | x = ID { [x] }
-  | x1 = ID; x2 = binders { x1 :: x2 }
+apply_expr:
+  | es = nonempty_list(atom) { apply_left es }
 
-atom_expr:
+atom:
   | LPAREN; e = expr; RPAREN { e }
   | n = ID { Var n }
   | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
@@ -56,13 +64,7 @@ atom_expr:
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
   | IF; e1 = expr; THEN; e2 = expr; ELSE; e3 = expr { If (e1, e2, e3) }
-  (* hack *)
-  | expr EQ expr { BinOp ($1, Eq, $3)}
-  | expr AND expr { BinOp ($1, And, $3)}
-  | expr OR expr { BinOp ($1, Or, $3)}
-  | expr LT expr { BinOp ($1, Lt, $3)}
-  | expr GT expr { BinOp ($1, Gt, $3)}
-  | expr PLUS expr { BinOp ($1, Add, $3)}
-  | expr MINUS expr { BinOp ($1, Sub, $3)}
-  | expr TIMES expr { BinOp ($1, Mul, $3)}
 
+binders:
+  | x = ID { [x] }
+  | x1 = ID; x2 = binders { x1 :: x2 }
