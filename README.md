@@ -12,18 +12,16 @@ You should install `git` and `opam` then:
 $ git clone https://github.com/OpenUpace/plec.git
 $ cd plec
 $ opam install . --with-test --deps-only -y
-$ dune exec plec -- -c "\\x.x" # Run the programming
+$ dune exec plec -- -c "while true do skip" # Run the programming
 ```
 
 ## Features
-- Curried lambda expression
-- Hindley-Milner Type System (Remy's Algorithm)
-- Sample CLI
+- Simple Pascal-like syntax.
 
 ---
 
 ## Acknowledgments
-Thanks to the tutorial on Hindley-Milner of Prof. Okeg Kiselyov, and other Hindley-Milner Type System implementation. They help plec becomes stronger.
+Many implementations.
 
 ## Contributing
 We thank you for contributing plec. Please read the CONTRIBUTING.md before contributing.

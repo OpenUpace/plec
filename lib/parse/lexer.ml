@@ -4,28 +4,26 @@ let id = [%sedlex.regexp? alpha | Star (alpha | digit | '_')]
 
 let rec token buf =
   match%sedlex buf with
-  | Plus digit -> Parser.TINT (int_of_string (Sedlexing.Utf8.lexeme buf))
-  | '\\' -> Parser.LAMBDA
+  | Plus digit -> Parser.INT (int_of_string (Sedlexing.Utf8.lexeme buf))
   | "if" -> Parser.IF
   | "then" -> Parser.THEN
   | "else" -> Parser.ELSE
-  | "let" -> Parser.LET
-  | "in" -> Parser.IN
+  | "while" -> Parser.WHILE
+  | "do" -> Parser.DO
+  | "begin" -> Parser.BEGIN
+  | "end" -> Parser.END
+  | '=' -> Parser.ASSIGN
+  | "skip" -> Parser.SKIP
   | "true" -> Parser.TRUE
   | "false" -> Parser.FALSE
-  | '=' -> Parser.ASSIGN
-  | "==" -> Parser.EQ
+  | '(' -> Parser.LPAREN
+  | ')' -> Parser.RPAREN
   | '+' -> Parser.PLUS
   | '-' -> Parser.MINUS
   | '*' -> Parser.TIMES
-  | '<' -> Parser.LT
   | '>' -> Parser.GT
-  | "&&" -> Parser.AND
-  | "||" -> Parser.OR
-  | '(' -> Parser.LPAREN
-  | ')' -> Parser.RPAREN
+  | '<' -> Parser.LT
   | ';' -> Parser.SEMICOLON
-  | '.' -> Parser.DOT
   | Plus white_space -> token buf
   | id -> Parser.ID (Sedlexing.Utf8.lexeme buf)
   | eof -> Parser.EOF

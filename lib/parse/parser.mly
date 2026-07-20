@@ -1,68 +1,50 @@
 %{
-  open Types
-
-  let curry vars body =
-    List.fold_right (fun var body -> Lam(var, body)) vars body
-
-  let let_multiple_parameters xs e1 =
-    if xs = [] then e1 else curry xs e1
-
-  let apply_left e =
-    match e with
-    | [] -> assert false
-    | f :: args -> List.fold_left (fun hd tl -> App (hd, tl)) f args
+  open Ast
 %}
 
-%token <int> TINT
+%token <int> INT
 %token <string> ID
-%token LAMBDA
-%token IF THEN ELSE
-%token LET IN ASSIGN
-%token EQ
-%token PLUS MINUS TIMES LT GT AND OR
-%token LPAREN RPAREN SEMICOLON DOT
-%token TRUE FALSE
 %token EOF
+%token PLUS MINUS TIMES GT LT
+%token ASSIGN
+%token SKIP
+%token TRUE FALSE
+%token IF THEN ELSE
+%token WHILE DO
+%token BEGIN END
+%token LPAREN RPAREN SEMICOLON
 
-%left     OR
-%left     AND
-%nonassoc LT GT EQ
-%left     PLUS MINUS
-%left     TIMES
+%right ASSIGN
+%nonassoc GT LT
+%left PLUS MINUS
+%left TIMES
 
-%start <Types.exp> exp
+%start <Ast.prog> prog
 
 %%
-exp:
-  | e = expr EOF { e }
+prog:
+  | s = stmt EOF { s }
+
+stmt:
+  | e = expr SEMICOLON { ExprStmt e }
+  | SKIP { Skip }
+  | IF e = expr THEN s1 = stmt ELSE s2 = stmt { If (e, s1, s2) }
+  | WHILE e = expr DO s = stmt { While (e, s) }
+  | BEGIN lst = list(stmt) END { Block (lst) }
 
 expr:
-  | e = expr_apply { e }
+  | LPAREN e = expr RPAREN { e }
+  | lit = literal { Lit lit }
+  | id = ID { Var id }
+  | e1 = expr PLUS e2 = expr { BinOp (Add, e1, e2) }
+  | e1 = expr MINUS e2 = expr { BinOp (Sub, e1, e2) }
+  | e1 = expr TIMES e2 = expr { BinOp (Mul, e1, e2) }
+  | e1 = expr GT e2 = expr { BinOp (Gt, e1, e2) }
+  | e1 = expr LT e2 = expr { BinOp (Lt, e1, e2) }
+  | id = ID ASSIGN e = expr { Assign (id, e) }
 
-expr_apply:
-  | es = nonempty_list(atom_expr) { apply_left es }
-
-binders:
-  | x = ID { [x] }
-  | x1 = ID; x2 = binders { x1 :: x2 }
-
-atom_expr:
-  | LPAREN; e = expr; RPAREN { e }
-  | n = ID { Var n }
-  | LAMBDA; vars = binders; DOT; body = expr { curry vars body }
-  | LET; name = ID; ASSIGN; t1 = expr; IN; t2 = expr { Let (name, t1, t2) }
-  | LET; name = ID; xs = binders; ASSIGN; e1 = expr; IN; e2 = expr { Let (name, let_multiple_parameters xs e1, e2) }
-  | i = TINT { IntLit i }
+literal:
+  | n = INT { IntLit n }
   | TRUE { BoolLit true }
   | FALSE { BoolLit false }
-  | IF; e1 = expr; THEN; e2 = expr; ELSE; e3 = expr { If (e1, e2, e3) }
-  (* hack *)
-  | expr EQ expr { BinOp ($1, Eq, $3)}
-  | expr AND expr { BinOp ($1, And, $3)}
-  | expr OR expr { BinOp ($1, Or, $3)}
-  | expr LT expr { BinOp ($1, Lt, $3)}
-  | expr GT expr { BinOp ($1, Gt, $3)}
-  | expr PLUS expr { BinOp ($1, Add, $3)}
-  | expr MINUS expr { BinOp ($1, Sub, $3)}
-  | expr TIMES expr { BinOp ($1, Mul, $3)}
-
+  | LPAREN RPAREN { UnitLit () }

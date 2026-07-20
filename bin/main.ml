@@ -15,26 +15,44 @@
 *)
 
 open Plec
-open Types
-open Error
-open Debug
-open Semantics
+open Ast
 
 (* Main *)
-let usage_msg = "plec [--version] -c <input>"
-let anon_arg = ref []
-let input_texts = ref ""
-let anon_fun arg = anon_arg := arg :: !anon_arg
-let speclist = [ ("-c", Arg.Set_string input_texts, "input ple code") ]
+let usage_msg = "plec [--verbose] <file>"
+let verbose = ref false
+let filename = ref None
 
-(* Small sample *)
-let main text =
-  let buf = Sedlexing.Utf8.from_string text in
-  let tokenize, lexbuf = Lexer.tokenize buf in
-  let result = Parser.exp tokenize lexbuf in
-  print_endline (string_of_ty (top_type_check result))
+let speclist =
+  [ ("--verbose", Arg.Set verbose, "Display this list of options") ]
+
+let anon_fun s =
+  match !filename with
+  | None -> filename := Some s
+  | Some _ ->
+      Printf.eprintf "Error: See: \n%s\n" usage_msg;
+      exit 1
+
+let read_file_to_string filename =
+  In_channel.with_open_text filename (fun ch -> In_channel.input_all ch)
+
+let main filename =
+  try
+    let content = read_file_to_string filename in
+    let buf = Sedlexing.Utf8.from_string content in
+    let tokenize, lexbuf = Lexer.tokenize buf in
+    let result = Parser.prog tokenize lexbuf in
+    print_endline (string_of_stmt result)
+  with Sys_error msg -> Printf.printf "Error: %s\n" msg
 
 let () =
   Arg.parse speclist anon_fun usage_msg;
 
-  main !input_texts
+  let filename =
+    match !filename with
+    | Some f -> f
+    | None ->
+        Printf.eprintf "Error: See: \n%s\n" usage_msg;
+        exit 1
+  in
+
+  main filename
